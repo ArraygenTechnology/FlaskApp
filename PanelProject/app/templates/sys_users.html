@@ -1,0 +1,220 @@
+{% extends "layout.html" %}
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Add Users</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+              <li class="breadcrumb-item active">Add Users</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+         <div class="col-md-12">
+            <!-- Form Element sizes -->
+            <div class="card card-success card-outline">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="nav-icon fas fa-users-cog"></i>
+                  Add User
+                </h3>
+              </div>
+              <div class="card-body">
+                {% with messages = get_flashed_messages() %}
+
+                {% if messages %}
+
+                {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+
+                        <span aria-hidden="true">x</span>
+
+                    </button>
+
+
+                {{message}}
+
+
+                </div>
+
+
+                {% endfor %}
+
+                {% endif %}
+                {% endwith %}
+
+                <form method="post" action="sys_users_add_update">
+                  <table class="table  table-sm table-borderless">
+                    <tr>
+                      <th class="text-right" style="width:25%;">User Name : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <div class="form-group">
+                              <input type="text" class="form-control" placeholder="First Name" name="f_name" required>
+                            </div>
+                          </div>
+                          <div class="col-sm-4">
+                            <div class="form-group">
+                              <input type="text" class="form-control" placeholder="Last Name" name ="l_name" required>
+                            </div>
+                          </div>
+                        </div>                 
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <th class="text-right ">Gender : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <select class="form-control" name="gender" required>
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right">Date of Birth : </th>
+                      <td>
+                         <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <div class="input-group date" id="sys_user_dob" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#sys_user_dob" name="dob" required>
+                                <div class="input-group-append" data-target="#sys_user_dob" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right ">Contact Number : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="text" class="form-control" placeholder="Enter Contact Number" name="contact_no" required>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right ">Password: </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="password" id ="password" class="form-control" placeholder="Enter Password" name="password" required>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right ">Confirm Password : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="password" id ="confirm_password" class="form-control" placeholder="Enter Confirm Password" required>
+                              <span id="password-error" class="error invalid-feedback"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                     <tr>
+                      <th class="text-right ">Email Address : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <input type="email" class="form-control" placeholder="Enter Email Address" name="email" required>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right ">Address : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <textarea class="form-control" rows="3" placeholder="Enter Address" name="address" required></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right ">Role : </th>
+                      <td>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <div class="form-group">
+                              <select class="form-control" name="role" required>
+                                <option value="">-- Select Role --</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Physician">Physician</option>
+                                <option value="Technician">Technician</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-right "> </th>
+                      <td class="text-right ">
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </form>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+          </div>
+
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    
+{% endblock %}

@@ -1,0 +1,41 @@
+------Instance Created
+Tags :
+Key = Name, value = flask-panel-application
+Security Group:
+Security group name = flask-panel-application
+Description = flask-panel-application-deploy
+flask-panel-application.pem
+
+--- Go to security group and edit inbounnd rules
+
+Type
+	Protocol
+	Port range
+	Source
+	Description - optional
+HTTP	TCP	80	0.0.0.0/0	-
+HTTP	TCP	80	::/0	-
+All TCP	TCP	0 - 65535	0.0.0.0/0	-
+All TCP	TCP	0 - 65535	::/0	-
+All traffic	All	All	0.0.0.0/0	-
+All traffic	All	All	::/0	-
+SSH	TCP	22	0.0.0.0/0	-
+SSH	TCP	22	::/0	-
+All UDP	UDP	0 - 65535	0.0.0.0/0	-
+All UDP	UDP	0 - 65535	::/0	-
+RDP	TCP	3389	0.0.0.0/0	-
+RDP	TCP	3389	::/0	-
+HTTPS	TCP	443	0.0.0.0/0	-
+HTTPS	TCP	443	::/0	-
+
+----- Go to elastic ip
+
+allocate new adrress-> allocate-> action -> associate ip address- > select name and priviate ip and done
+
+
+------- Installing putty
+
+sudo apt-get update
+
+sudo apt-get install -y putty
+

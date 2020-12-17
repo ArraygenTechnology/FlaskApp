@@ -1,0 +1,3 @@
+email : bioinformatics.arraygen.ak@gmail.com
+pass : Arraygen123$
+username :bioinformatics.arraygen
