@@ -39,3 +39,20 @@ sudo apt-get update
 
 sudo apt-get install -y putty
 
+putty configuration put public ip > put ubuntu in data > go to ftp > auth and pem key(converted from keygen) upload 
+
+------ Installing filezilla
+ 
+sudo apt-get install filezilla
+
+trasfer project files
+
+---- Transfer files from filezilla to 
+
+---- install nginx and gunicorn on server connected via putty
+
+search using normal ubuntu command and install
+
+install flask , sqlalchemy , flask login
+
+
