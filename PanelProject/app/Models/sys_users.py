@@ -1,4 +1,4 @@
-from .. import app,login_manager, db
+from .. import app, db
 
 class Users(db.Model):
     id =  db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True )
@@ -22,6 +22,3 @@ class Users(db.Model):
         self.password = password
         self.address = address
         self.role = role
-
-    def __repr__(self):
-        return self.f_name+" "+ self.l_name

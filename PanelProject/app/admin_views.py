@@ -5,10 +5,27 @@ from . import *
 def login(user_type):
     return render_template('login.html' , user_type = user_type)
 
-@app.route('/dashboard',methods = ['POST', 'GET'])
+@app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    if "login_id" in session:
+        return render_template('dashboard.html')
+    else:
+        return redirect("/bad_request")
 
 @app.route('/sys_users')
 def sys_users():
-    return render_template('sys_users.html')
+    if "login_id" in session:
+        return render_template('sys_users.html')
+    else:
+        return redirect("/bad_request")
+
+@app.route('/sys_users_view')
+def sys_users_view():
+    if "login_id" in session:
+        return render_template('sys_users_view.html')
+    else:
+        return redirect("/bad_request")
+
+@app.route("/bad_request")
+def bad_request():
+    return render_template("bad_request.html")

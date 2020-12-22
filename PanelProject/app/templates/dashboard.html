@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block content %}
+{% block body %}
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -21,6 +21,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+        {% include "flash_alert.html" ignore missing %}
         <div class="row">
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">

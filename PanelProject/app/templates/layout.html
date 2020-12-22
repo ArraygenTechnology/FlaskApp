@@ -164,12 +164,20 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="/sys_users_view" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>View User</p>
                 </a>
               </li>
             </ul>
+            <li class="nav-item">
+            <a href="/sys_user_logout" class="nav-link">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>
+                Logout
+              </p>
+            </a>
+          </li>
           </li>
          
         </ul>
@@ -181,7 +189,7 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-   {% block content %}
+   {% block body %}
 
    {% endblock %}
   </div>
