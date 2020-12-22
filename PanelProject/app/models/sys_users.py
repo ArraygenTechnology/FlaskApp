@@ -22,3 +22,4 @@ class Users(db.Model):
         self.password = password
         self.address = address
         self.role = role
+

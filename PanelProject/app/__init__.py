@@ -10,5 +10,5 @@ else:
 
 db = SQLAlchemy(app)
 
-from . import admin_views, sys_users_db
-from .Models import sys_users
+from . import sys_users_control, dashboard_control
+from .models import sys_users
