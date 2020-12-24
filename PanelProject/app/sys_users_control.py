@@ -1,10 +1,9 @@
 from . import *
 from .models import sys_users
 
-
 # Login
 @app.route("/sys_user_login", methods = ['POST'])
-def f_sys_user_login():
+def sys_user_login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -14,6 +13,11 @@ def f_sys_user_login():
             if user != None:
                 session['login_id'] = user.email
                 session['role'] = user.role
+                session['l_name'] = user.l_name
+                session['f_name'] = user.f_name
+                session['gender'] = user.gender
+                print(user)
+                print(session)
                 flash("Logged in Successfully".title(), "info")
                 return redirect("/dashboard")
             else:
@@ -26,16 +30,16 @@ def f_sys_user_login():
 
 # Logout
 @app.route("/sys_user_logout")
-def f_sys_user_logout():
+def sys_user_logout():
     session.pop('login_id',None)
     session.pop('role',None)
     flash("Logged out successfully".title(), "info")
     return redirect("/")
 
 # Add or Update Users
-@app.route('/sys_users_add_update/', defaults={'id':0})
-@app.route('/sys_users_add_update/<id>', methods = ['GET', 'POST'])
-def f_sys_users_add_update(id):
+@app.route('/sys_users_add_update', defaults={'id':0}, methods = ['GET', 'POST'])
+@app.route('/sys_users_add_update/<int:id>', methods = ['GET', 'POST'])
+def sys_users_add_update(id):
     if request.method == 'POST':
         f_name = request.form['f_name']
         l_name = request.form['l_name']
@@ -46,8 +50,25 @@ def f_sys_users_add_update(id):
         password = request.form['password']
         address = request.form['address']
         role = request.form['role']
-        if request.form.get('id') != 0:
-            pass
+        if id != 0:
+            update_user = sys_users.Users.query.get(id)
+            update_user.f_name = f_name
+            update_user.l_name = l_name
+            update_user.gender = gender
+            update_user.dob = dob
+            update_user.contact_no = contact_no
+            update_user.password = password
+            update_user.address= address
+            update_user.role = role
+            exists = sys_users.Users.query.filter_by(email=email).first()
+            if exists == None :
+                update_user.email = email
+            elif exists.id == id:
+                pass
+            else:
+                flash("Email id not updated becuase it's email already exists".title(), "warning")
+            db.session.commit()
+            flash("User Information Updated Successfully".title(), "info")
         else:
             exists = sys_users.Users.query.filter_by(email=email).first()
             if exists == None:
@@ -57,12 +78,12 @@ def f_sys_users_add_update(id):
                 flash("User Added Successfully".title(),"info")
             else:
                 flash("User Already Exists".title(), "error")
-    return redirect('/sys_users')
+    return redirect('/sys_users_view')
 
 
-@app.route('/sys_users/', defaults={'id': 0})
-@app.route('/sys_users/<id>')
-def f_sys_users(id):
+@app.route('/sys_user/', defaults={'id': 0})
+@app.route('/sys_user/<id>')
+def sys_user(id):
     if "login_id" in session:
         if id == 0:
             return render_template('sys_users.html')
@@ -76,10 +97,21 @@ def f_sys_users(id):
         return redirect("/bad_request")
 
 @app.route('/sys_users_view')
-def f_sys_users_view():
+def sys_users_view():
     if "login_id" in session:
         users = sys_users.Users.query.all()
         return render_template('sys_users_view.html', Users= users)
+    else:
+        return redirect("/bad_request")
+
+@app.route('/sys_users_delete/<id>')
+def sys_users_delete(id):
+    if "login_id" in session:
+        delete_user = sys_users.Users.query.get(id)
+        db.session.delete(delete_user)
+        db.session.commit()
+        flash("User Deleted Successfully".title(), "info")
+        return redirect("/sys_users_view")
     else:
         return redirect("/bad_request")
 

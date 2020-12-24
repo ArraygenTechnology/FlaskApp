@@ -28,14 +28,14 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="nav-icon fas fa-users-cog"></i>
-                  Add User
+                 {% if user is defined %}Edit{% else %}Add{% endif %}  User
                 </h3>
               </div>
               <div class="card-body">
                 
                 {% include "flash_alert.html" ignore missing %}
 
-                <form method="post" action="sys_users_add_update">
+                <form method="post" action="{% if user is defined %}{{ url_for('sys_users_add_update', id = user.id) }}{% else %}{{ url_for('sys_users_add_update') }}{% endif %} ">
                   <table class="table  table-sm table-borderless">
                     <tr>
                       <th class="text-right" style="width:25%;">User Name : </th>
@@ -98,7 +98,7 @@
                         <div class="row">
                           <div class="col-sm-8">
                             <div class="form-group">
-                              <input type="text" class="form-control" placeholder="Enter Contact Number" name="contact_no"  value="{% if user is defined %}{{ user.contact_no }}{% endif %}" required>
+                              <input type="text" class="form-control" placeholder="Enter Contact Number" name="contact_no"  value="{% if user is defined %}{{ user.contact_no }}{% endif %}" required >
                             </div>
                           </div>
                         </div>

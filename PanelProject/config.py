@@ -1,17 +1,13 @@
+import os
 class Config(object):
     DEBUG = False
     TESTING = False
-    SECRET_KEY = "B\xb2?.\xdf\x9f\xa7m\xf8\x8a%,\xf7\xc4\xfa\x91"
-
-    DB_NAME = "db"
-    DB_USERNAME = "root"
-    DB_PASSWORD = ""
-
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'guess'
+    SESSION_TYPE = 'filesystem'
     IMAGE_UPLOADS = "/home/arraygen/Desktop/Akshata/AWSProjectPanels/PanelProject/app/static/uploads"
-
     SESSION_COOKIE_SECURE = True
-
-    SQLALCHEMY_DATABASE_URI = "mysql://root:@localhost/panel_project"
+    SQLALCHEMY_DATABASE_URI = "mysql+mysqldb://admin:Arraygen123$@paneldb.cpquggjyqqa1.ap-south-1.rds.amazonaws.com/panel_project"
+    #SQLALCHEMY_DATABASE_URI = "mysql://root:@localhost/panel_project"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 class ProductionConfig(Config):
     pass

@@ -1,3 +1,9 @@
 email : bioinformatics.arraygen.ak@gmail.com
 pass : Arraygen123$
 username :bioinformatics.arraygen
+
+
+database and password is :
+panelDB
+paneldb
+Arraygen123$

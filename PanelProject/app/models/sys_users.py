@@ -7,8 +7,8 @@ class Users(db.Model):
     gender = db.Column(db.String(20),nullable = False)
     dob = db.Column(db.String(20),nullable = False)
     email = db.Column(db.String(255),nullable = False, unique=True)
-    contact_no = db.Column(db.String(50),nullable = False, unique=True)
-    password = db.Column(db.String(20), nullable=False, unique=True)
+    contact_no = db.Column(db.String(50),nullable = False)
+    password = db.Column(db.String(20), nullable=False)
     address =db.Column(db.Text(),nullable = False)
     role =db.Column(db.String(20),nullable = False)
 
