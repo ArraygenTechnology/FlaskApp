@@ -93,7 +93,7 @@
           {% endif %}
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{session.gender}} {{session.f_name}} {{session.l_name}}</a>
+          <a href="#" class="d-block">{{session.f_name}} {{session.l_name}}</a>
         </div>
       </div>
 
@@ -122,7 +122,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="/patient/" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Patient</p>
                 </a>
@@ -261,7 +261,15 @@
 <script>
   $(function () {
     //Date range picker
-    $('#sys_user_dob').datetimepicker({
+    $('#sys_user_dob,#patient_dob').datetimepicker({
+        format: 'L',
+        maxDate: new Date()
+    });
+
+  })
+  $(function () {
+    //Date range picker
+    $('#patient_date').datetimepicker({
         format: 'L',
         maxDate: new Date()
     });

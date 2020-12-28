@@ -4,7 +4,6 @@ from . import *
 @app.route('/<user_type>')
 def login(user_type):
     if "login_id" in session:
-
         return redirect("/dashboard")
     else:
         return render_template('login.html' , user_type = user_type)

@@ -3,7 +3,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'guess'
-    SESSION_TYPE = 'filesystem'
+    SESSION_TYPE = 'redis'
     IMAGE_UPLOADS = "/home/arraygen/Desktop/Akshata/AWSProjectPanels/PanelProject/app/static/uploads"
     SESSION_COOKIE_SECURE = True
     SQLALCHEMY_DATABASE_URI = "mysql+mysqldb://admin:Arraygen123$@paneldb.cpquggjyqqa1.ap-south-1.rds.amazonaws.com/panel_project"
