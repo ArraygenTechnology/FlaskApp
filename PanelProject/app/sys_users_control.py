@@ -16,6 +16,7 @@ def sys_user_login():
                 session['l_name'] = user.l_name
                 session['f_name'] = user.f_name
                 session['gender'] = user.gender
+
                 flash("Logged in Successfully".title(), "info")
                 return redirect("/dashboard")
             else:

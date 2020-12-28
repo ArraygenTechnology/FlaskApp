@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin | Dashboard | Users</title>
+  <title>Admin | Dashboard </title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -134,7 +134,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="/patients_view" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>View Patient</p>
                 </a>
@@ -262,7 +262,7 @@
   $(function () {
     //Date range picker
     $('#sys_user_dob,#patient_dob').datetimepicker({
-        format: 'L',
+        format: 'DD/MM/YYYY',
         maxDate: new Date()
     });
 
