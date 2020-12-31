@@ -38,7 +38,7 @@
                 <form method="post" action="{% if user is defined %}{{ url_for('sys_users_add_update', id = user.id) }}{% else %}{{ url_for('sys_users_add_update') }}{% endif %} ">
                   <table class="table  table-sm table-borderless">
                     <tr>
-                      <th class="text-right" style="width:25%;">User Name : </th>
+                      <th class="text-right" style="width:25%;"><span class="text-danger">*</span> User Name : </th>
                       <td>
                         <div class="row">
                           <div class="col-sm-4">
@@ -59,7 +59,7 @@
                     {% set gender = user.gender %}
                     {% endif %} 
                     <tr>
-                      <th class="text-right ">Gender : </th>
+                      <th class="text-right "><span class="text-danger">*</span> Gender : </th>
                       <td>
                         <div class="row">
                           <div class="col-sm-8">
@@ -76,24 +76,19 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right">Date of Birth : </th>
+                      <th class="text-right"><span class="text-danger">*</span> Date of Birth : </th>
                       <td>
                          <div class="row">
                           <div class="col-sm-8">
                             <div class="form-group">
-                              <div class="input-group date" id="sys_user_dob" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" data-target="#sys_user_dob" name="dob"  value="{% if user is defined %}{{ user.dob }}{% endif %}" required>
-                                <div class="input-group-append" data-target="#sys_user_dob" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                              </div>
+                                <input type="date" class="form-control dob"name="dob"  value="{% if user is defined %}{{ user.dob }}{% endif %}" max="" required>                             
                             </div>
                           </div>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right ">Contact Number : </th>
+                      <th class="text-right "><span class="text-danger">*</span> Contact Number : </th>
                       <td>
                         <div class="row">
                           <div class="col-sm-8">
@@ -105,7 +100,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right ">Password: </th>
+                      <th class="text-right "><span class="text-danger">*</span> Password: </th>
                       <td>
                         <div class="row">
                           <div class="col-sm-8">
@@ -117,7 +112,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th class="text-right ">Confirm Password : </th>
+                      <th class="text-right "><span class="text-danger">*</span> Confirm Password : </th>
                       <td>
                         <div class="row">
                           <div class="col-sm-8">
@@ -130,7 +125,7 @@
                       </td>
                     </tr>
                      <tr>
-                      <th class="text-right ">Email Address : </th>
+                      <th class="text-right "><span class="text-danger">*</span> Email Address : </th>
                       <td>
                         <div class="row">
                           <div class="col-sm-8">
@@ -158,7 +153,7 @@
                     {% set role = user.role %}
                     {% endif %} 
                     <tr>
-                      <th class="text-right ">Role : </th>
+                      <th class="text-right "><span class="text-danger">*</span> Role : </th>
                       <td>
                         <div class="row">
                           <div class="col-sm-8">

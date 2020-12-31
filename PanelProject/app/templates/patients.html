@@ -43,16 +43,12 @@
                 <div class="card-body">
                     <table class="table table-sm table-borderless">
                       <tr>
-                        <th class="text-right" style="width:25%;">Date : </th>
+                        <th class="text-right" style="width:25%;"><span class="text-danger">*</span> Date: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <div class="input-group date" id="patient_date" data-target-input="nearest">
-                                  <input type="text" class="form-control datetimepicker-input" data-target="#patient_date" name="date"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required>
-                                  <div class="input-group-append" data-target="#patient_date" data-toggle="datetimepicker">
-                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                  </div>
+                                  <input type="date" class="form-control current_date" name="date"  value="{% if patient is defined %}{{ patient.date }}{% endif %}" required readonly>
                                 </div>
                               </div>
                             </div>
@@ -60,40 +56,40 @@
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Name : </th>
+                        <th class="text-right"><span class="text-danger">*</span> Name: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-6">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="First Name" name="f_name"  value="{% if user is defined %}{{ user.f_name }}{% endif %}" required>
+                                <input type="text" class="form-control" placeholder="First Name" name="f_name"  value="{% if patient is defined %}{{ patient.f_name }}{% endif %}" required>
                               </div>
                             </div>
                             <div class="col-sm-6">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Last Name" name ="l_name"  value="{% if user is defined %}{{ user.l_name }}{% endif %}" required>
+                                <input type="text" class="form-control" placeholder="Last Name" name ="l_name"  value="{% if patient is defined %}{{ patient.l_name }}{% endif %}" required>
                               </div>
                             </div>
                           </div>                 
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right ">Patient ID : </th>
+                        <th class="text-right "><span class="text-danger">*</span> Patient ID: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Patient ID" name="patient_id"  value="{% if patient is defined %}{{ user.patient_id }}{% endif %}" required >
+                                <input type="text" class="form-control" placeholder="Enter Patient ID" name="patient_id"  value="{% if patient is defined %}{{ patient.patient_id }}{% elif patient_id is defined %}{{patient_id}}{% endif %}" required readonly>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       {% set gender="" %}
-                      {% if user is defined %}
-                      {% set gender = user.gender %}
+                      {% if patient is defined %}
+                      {% set gender = patient.gender %}
                       {% endif %} 
                       <tr>
-                        <th class="text-right ">Gender : </th>
+                        <th class="text-right "><span class="text-danger">*</span> Gender: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -110,7 +106,7 @@
                         </td>
                       </tr>
                        <tr>
-                        <th class="text-right ">Ethnicity : </th>
+                        <th class="text-right "><span class="text-danger">*</span> Ethnicity: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -122,24 +118,19 @@
                         </td>
                       </tr>
                        <tr>
-                        <th class="text-right">Date of Birth : </th>
+                        <th class="text-right"><span class="text-danger">*</span> Date of Birth: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <div class="input-group date" id="patient_dob" data-target-input="nearest">
-                                  <input type="text" class="form-control datetimepicker-input" data-target="#patient_dob" name="dob"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required>
-                                  <div class="input-group-append" data-target="#patient_dob" data-toggle="datetimepicker">
-                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                  </div>
-                                </div>
+                                  <input type="date" class="form-control dob" name="dob"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right ">Contact No : </th>
+                        <th class="text-right "><span class="text-danger">*</span> Contact No: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -151,7 +142,7 @@
                         </td>
                       </tr>
                        <tr>
-                        <th class="text-right ">Email ID : </th>
+                        <th class="text-right "><span class="text-danger">*</span> Email ID: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -163,7 +154,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right ">Password: </th>
+                        <th class="text-right "><span class="text-danger">*</span> Password: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -175,7 +166,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right ">Confirm Password : </th>
+                        <th class="text-right "><span class="text-danger">*</span> Confirm Password: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -188,7 +179,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right ">Address : </th>
+                        <th class="text-right "><span class="text-danger">*</span> Address: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -221,53 +212,43 @@
                  
                     <table class="table table-sm table-borderless">
                       <tr>
-                        <th class="text-right" style="width:25%;">Order By: </th>
+                        <th class="text-right" style="width:25%;"><span class="text-danger">*</span> Order By: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Order By" name="order_by"  value="{% if patient is defined %}{{ user.order_by }}{% endif %}" required >
+                                <input type="text" class="form-control" placeholder="Enter Order By" name="order_by"  value="{% if patient is defined %}{{ patient.order_by }}{% endif %}" required >
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Collection Date : </th>
+                        <th class="text-right"><span class="text-danger">*</span> Collection Date: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <div class="input-group date" id="collection_date" data-target-input="nearest">
-                                  <input type="text" class="form-control datetimepicker-input" data-target="#collection_date" name="date"  value="{% if user is defined %}{{ user.collection_date }}{% endif %}" required>
-                                  <div class="input-group-append" data-target="#collection_date" data-toggle="datetimepicker">
-                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                  </div>
-                                </div>
+                                  <input type="date" class="form-control " name="collection_date"  value="{% if patient is defined %}{{ patient.collection_date }}{% endif %}" required>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Received Date : </th>
+                        <th class="text-right"><span class="text-danger">*</span> Received Date: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <div class="input-group date" id="collection_date" data-target-input="nearest">
-                                  <input type="text" class="form-control datetimepicker-input" data-target="#received_date" name="date"  value="{% if user is defined %}{{ user.received_date }}{% endif %}" required>
-                                  <div class="input-group-append" data-target="#received_date" data-toggle="datetimepicker">
-                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                  </div>
-                                </div>
+                                  <input type="date" class="form-control" name="received_date"  value="{% if patient is defined %}{{ patient.received_date }}{% endif %}" required>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Report Generated: </th>
+                        <th class="text-right"><span class="text-danger">*</span> Report Generated: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
@@ -302,108 +283,108 @@
                 <div class="card-body">
                     <table class="table table-sm table-borderless">
                       <tr>
-                        <th class="text-right" style="width:25%;">Age : </th>
+                        <th class="text-right" style="width:25%;"><span class="text-danger">*</span> Age: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="" name="age"  value="{% if patient is defined %}{{ patient.age }}{% endif %}" required>
+                                <input type="text" class="form-control age" placeholder="" name="age"  value="{% if patient is defined %}{{ patient.age }}{% endif %}" required>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Weight : </th>
+                        <th class="text-right"><span class="text-danger">*</span> Weight: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Weight" name="weight"  value="{% if patient is defined %}{{ patient.weight }}{% endif %}" required>
+                                <input type="text" class="form-control weight" placeholder="Enter Weight in kg" name="weight"  value="{% if patient is defined %}{{ patient.weight }}{% endif %}" required>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Height : </th>
+                        <th class="text-right"><span class="text-danger">*</span> Height: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter Height" name="height"  value="{% if patient is defined %}{{ patient.height }}{% endif %}" required>
+                                <input type="text" class="form-control height" placeholder="Enter Height in cm" name="height"  value="{% if patient is defined %}{{ patient.height }}{% endif %}" required>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">BMI : </th>
+                        <th class="text-right"><span class="text-danger">*</span> BMI: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="" name="bmi"  value="{% if patient is defined %}{{ patient.bmi }}{% endif %}" required>
+                                <input type="text" class="form-control bmi" placeholder="" name="bmi"  value="{% if patient is defined %}{{ patient.bmi }}{% endif %}" required>
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Allergic to : </th>
+                        <th class="text-right">Allergic to: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="" name="allergic_to"  value="{% if patient is defined %}{{ patient.allergic_to }}{% endif %}" required>
+                                <input type="text" class="form-control" placeholder="" name="allergic_to"  value="{% if patient is defined %}{{ patient.allergic_to }}{% endif %}" >
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right">Additional 1 : </th>
+                        <th class="text-right">Additional 1: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="" name="additional1"  value="{% if patient is defined %}{{ patient.additional1 }}{% endif %}" required>
+                                <input type="text" class="form-control" placeholder="" name="additional1"  value="{% if patient is defined %}{{ patient.additional1 }}{% endif %}" >
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                        <tr>
-                        <th class="text-right">Additional 2 : </th>
+                        <th class="text-right">Additional 2: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="" name="additional2"  value="{% if patient is defined %}{{ patient.additional2 }}{% endif %}" required>
+                                <input type="text" class="form-control" placeholder="" name="additional2"  value="{% if patient is defined %}{{ patient.additional2 }}{% endif %}" >
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                        <tr>
-                        <th class="text-right">Additional 3 : </th>
+                        <th class="text-right">Additional 3: </th>
                         <td>
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control" placeholder="" name="additional3"  value="{% if patient is defined %}{{ patient.additional3 }}{% endif %}" required>
+                                <input type="text" class="form-control" placeholder="" name="additional3"  value="{% if patient is defined %}{{ patient.additional3 }}{% endif %}">
                               </div>
                             </div>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <th class="text-right ">Remarks : </th>
+                        <th class="text-right ">Remarks: </th>
                         <td>
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <textarea class="form-control" rows="3" placeholder="Enter Remarks" name="remarks">{% if patient is defined %}{{ patient.remarks }}{% endif %}</textarea>
+                                <textarea class="form-control" rows="3" placeholder="Enter Remarks" name="remark">{% if patient is defined %}{{ patient.remark }}{% endif %}</textarea>
                               </div>
                             </div>
                           </div>
@@ -414,12 +395,17 @@
                 <!-- /.card-body -->
               </div>
               <!-- /.card -->
+              {% set panel_checked = [] %}
+              {% if patient is defined %}
+              {% set panel_checked = patient.panels %}
+              {% endif %} 
+              <!--  -->
               <!-- Form Element sizes -->
               <div class="card card-success card-outline">
                 <div class="card-header">
                   <h3 class="card-title">
                   <i class="nav-icon fas fa-vial"></i>
-                   Test Request
+                   Test Request 
                   </h3>
                   <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -428,24 +414,21 @@
                   </div>
                 </div>
                 <div class="card-body">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                       <!-- checkbox -->
                       <div class="form-group">
+                        {% for panel in panels %}
+                        
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox">
-                          <label class="form-check-label">Genetic report</label>
+                          <input class="form-check-input" type="checkbox" name = "panel" {% if panel in panel_checked %}checked{% endif %} value="{{panel.id}}">
+                          <label class="form-check-label">{{panel.name}} Report</label>
                         </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" checked="">
-                          <label class="form-check-label">Fitness report</label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" >
-                          <label class="form-check-label">Exercise report</label>
-                        </div>
+                        {% endfor %}
                       </div>
                     </div>
-                      
+                    <div class="col-sm-12">
+                      <span class="text-danger" id ="panel_error"></span>
+                    </div>                      
                 </div>
                 <!--  /.Card Body -->  
               </div>
@@ -459,7 +442,7 @@
               <div class="card">               
                 <div class="card-body">                   
                     <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" id="submit_patient" class="btn btn-primary">Submit</button>
                     </div>
                       
                 </div>

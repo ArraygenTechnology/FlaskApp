@@ -259,23 +259,42 @@
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <!-- Users module display date in form -->
 <script>
-  $(function () {
-    //Date range picker
-    $('#sys_user_dob,#patient_dob').datetimepicker({
-        format: 'DD/MM/YYYY',
-        maxDate: new Date()
-    });
+  $(function() {
+    var d = new Date();
 
-  })
-  $(function () {
-    //Date range picker
-    $('#patient_date').datetimepicker({
-        format: 'L',
-        maxDate: new Date()
-    });
+    var month = d.getMonth()+1;
+    var day = d.getDate();
 
-  })
-  
+    var output = d.getFullYear() + '-' +
+        (month<10 ? '0' : '') + month + '-' +
+        (day<10 ? '0' : '') + day;
+    $(".dob").attr("max", output);
+    if($(".current_date").val() == ""){
+      $(".current_date").val(output);
+    }
+  });
+  $( ".dob" ).change(function() {
+    dob = new Date($('.dob').val());
+    var today = new Date();
+    var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+    $('.age').val(age);
+  });
+
+  $( ".weight, .height" ).change(function() {
+    weight = parseInt($('.weight').val());
+    height = parseInt($('.height').val());
+    var bmi = (weight / (height * height)) * 10000 ;
+    $('.bmi').val(bmi);
+  });
+   $('#submit_patient').click(function() {
+      checked = $("input[type=checkbox]:checked").length;
+
+      if(!checked) {
+        $('#panel_error').html("You must have to check atleast one checkbox");
+        return false;
+      }
+
+    });
 </script>
 <!-- Users Modules Address display in modal -->
 <script type="text/javascript">
