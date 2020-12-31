@@ -5,6 +5,7 @@ from .models import patients, panels
 @app.route('/patient/<id>')
 def patient(id):
     if "login_id" in session:
+        all_patients = patients.Patients.query.all()
         if id == 0:
             # For Add patirnt view
             panels_obj = panels.Panels.query.order_by(panels.Panels.id).all()
@@ -19,7 +20,7 @@ def patient(id):
                     chr1 = chr(ord(chr1)+1)
                     num = 1
                 patient_id = patient_id[:3]+chr1+(str(num).zfill(5))
-            return render_template('patients.html', panels= panels_obj , patient_id=patient_id)
+            return render_template('patients.html', panels= panels_obj , patient_id=patient_id, patients = all_patients)
         else:
             # this for edit view
             panels_obj = panels.Panels.query.order_by(panels.Panels.id).all()
@@ -29,7 +30,7 @@ def patient(id):
             else:
                 """ print(exists)
                 print(exists.panels)"""
-                return render_template('patients.html', panels= panels_obj, patient = exists)
+                return render_template('patients.html', panels= panels_obj, patient = exists , patients = all_patients)
     else:
         return redirect("/bad_request")
 
@@ -62,7 +63,7 @@ def patients_add_update(id):
             else:
                 flash("Email id not updated becuase it's email already exists".title(), "warning")
 
-            db.session.commit()
+            #db.session.commit()
             flash("Patient Information Updated Successfully".title(), "info")
         else:
         # add new patient details
@@ -80,7 +81,8 @@ def patients_add_update(id):
                 flash("Patient Added Successfully".title(), "info")
             else:
                 flash("Patient Already Exists".title(), "error")
-    return redirect('/patients_view')
+
+    return redirect('/patient')
 
 
 @app.route('/patients_view')
@@ -89,5 +91,17 @@ def patients_view():
         #users = sys_users.Users.query.all()
         users=''
         return render_template('patients_view.html', Users= users)
+    else:
+        return redirect("/bad_request")
+
+
+@app.route('/patient_delete/<id>')
+def patient_delete(id):
+    if "login_id" in session:
+        delete_patient = patients.Patients.query.get(id)
+        db.session.delete(delete_patient)
+        db.session.commit()
+        flash("User Deleted Successfully".title(), "info")
+        return redirect("/patient")
     else:
         return redirect("/bad_request")
