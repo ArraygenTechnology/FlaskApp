@@ -33,8 +33,8 @@
               </div>
               <div class="card-body">
                 {% include "flash_alert.html" ignore missing %}
-                <div>
-                  <table id="dataTable1" class="table table-bordered">
+                <div class="table-responsive">
+                  <table id="dataTable1" class="table table-bordered table-sm">
                     <thead>
                     <tr>
                       <th>Patient Id</th>
@@ -45,16 +45,26 @@
                       <th>Physician Status</th>
                       <th>Date Physician Reviewed</th>
                       <th>Email ID</th>
-                      <th>Send</th>
-                      <th>Date</th>
-                      <th>Print and Issue</th>
-                      <th>Date</th>
                       <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for user in Users %}
-                   
+                    {% for patient_panel in patients_panels_refid %}
+                     <tr>
+                        <td>{{patient_panel[0].patient_id}}</td>
+                        <td>{{patient_panel[0].f_name}} {{patient_panel[0].l_name}}</td>
+                        <td>{{patient_panel[1].name}} </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{patient_panel[0].email}}</td>
+                        <td>
+                          <a href="" onclick="return confirm('Are you sure you want to send this result?');"> <i class="fas fa-paper-plane" title="Send Results"></i></a>
+                          <a href="" onclick="return confirm('Are you sure you want to print this result?');"> <i class="fas fa-print" title="Print Results"></i></a>
+                          
+                        </td>
+                      </tr>
                     {% endfor %}
                     </tbody>
                   </table>

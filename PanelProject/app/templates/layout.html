@@ -295,43 +295,41 @@
       }
 
     });
-function dna_resultFunc(e,i){
-    //alert(i);
-    var name = e.files[0].name; 
-    if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
-      $("#dna_result_name").text(name); 
-    }else{
-      $("#dna_result").val("");
-      $("#dna_result_name").text("This file is not allowed to submit"); 
+
+    function dna_resultFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name; 
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
+          $("#dna_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>'); 
+        }else{
+          $("#dna_result"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of dna result");
+          //$("#dna_result_name"+i).text("This file is not allowed to submit"); 
+        }
     }
-}
-/*$( "#dna_result" ).change(function(e) {
-    var name = e.target.files[0].name; 
-    if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
-      //$("#dna_result_name").text(name); 
-    }else{
-      $("#dna_result").val("");
-      $("#dna_result_name").text("This file is not allowed to submit"); 
+
+    function blood_resultFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name; 
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
+          $("#blood_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');  
+        }else{
+          $("#blood_result"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of blood result");
+          //$("#blood_result_name"+i).text("This file is not allowed to submit"); 
+        }
     }
-});*/
-$( "#blood_result" ).change(function(e) {
-    var name = e.target.files[0].name; 
-    if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
-      //$("#blood_result_name").text(name); 
-    }else{
-      $("#blood_result").val("");
-      $("#blood_result_name").text("This file is not allowed to submit"); 
+
+    function allergy_resultFunc(e,i){
+        var name = e.files[0].name; 
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
+          $("#allergy_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>'); 
+        }else{
+          $("#allergy_result"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of allergy result");
+          //$("#allergy_result_name"+i).text("This file is not allowed to submit"); 
+        }
     }
-});
-$( "#allergy_result" ).change(function(e) {
-    var name = e.target.files[0].name; 
-    if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
-      //$("#allergy_result_name").text(name); 
-    }else{
-      $("#allergy_result").val("");
-      $("#allergy_result_name").text("This file is not allowed to submit"); 
-    }
-});
 
 </script>
 <!-- Users Modules Address display in modal -->

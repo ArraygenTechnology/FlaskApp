@@ -486,11 +486,11 @@
                       <td>{{ patient.contact_no }}</td>
                       <td>{{ patient.email }}</td>
                       <td>
-                        <a href=""> <!-- /patient/{{ patient.id }} -->
+                        <a href="/patient/{{ patient.id }}"> <!--  -->
                           <i class="fas fa-edit"  aria-hidden="true"></i>
                         </a> 
-                        <!-- /patient_delete/{{ patient.id }} -->
-                        <a href="" onclick="return confirm('Are you sure you want to delete this?');">
+                        <!--  -->
+                        <a href="/patient_delete/{{ patient.id }}" onclick="return confirm('Are you sure you want to delete this?');">
                           <i class="fa fa-trash" aria-hidden="true"></i>
                         </a>
                       </td>

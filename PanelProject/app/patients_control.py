@@ -55,15 +55,14 @@ def patients_add_update(id):
             patient_panels = data.getlist('panel')
 
             update_patient.panels = [panels.Panels.query.get(p_id) for p_id in patient_panels]
-            print(update_patient.panels)
+            #print(update_patient.panels)
             if exists == None:
                 update_patient.email = all_data.get('email')
             elif exists.id == id:
                 pass
             else:
                 flash("Email id not updated becuase it's email already exists".title(), "warning")
-
-            #db.session.commit()
+            db.session.commit()
             flash("Patient Information Updated Successfully".title(), "info")
         else:
         # add new patient details
@@ -88,9 +87,11 @@ def patients_add_update(id):
 @app.route('/patients_view')
 def patients_view():
     if "login_id" in session:
-        #users = sys_users.Users.query.all()
-        users=''
-        return render_template('patients_view.html', Users= users)
+        patients_panels_refid = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels.id).filter(
+            patients.Patient_panels.panel_id == panels.Panels.id,
+            patients.Patient_panels.patient_id == patients.Patients.id).order_by(patients.Patients.id).all()
+        patients_panels_refid = []
+        return render_template('patients_view.html', patients_panels_refid= patients_panels_refid)
     else:
         return redirect("/bad_request")
 
@@ -98,7 +99,20 @@ def patients_view():
 @app.route('/patient_delete/<id>')
 def patient_delete(id):
     if "login_id" in session:
+        uploaded_files = patients.Patient_panels.query.filter(patients.Patient_panels.patient_id == id)
+        for file in uploaded_files:
+            if file.dna_results != None:
+                os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],file.dna_results))
+
+            if file.blood_results != None:
+                os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],file.blood_results))
+
+            if file.allergy_results != None:
+                os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],file.allergy_results))
+
+            print(file.dna_results , file.blood_results , file.allergy_results)
         delete_patient = patients.Patients.query.get(id)
+
         db.session.delete(delete_patient)
         db.session.commit()
         flash("User Deleted Successfully".title(), "info")
