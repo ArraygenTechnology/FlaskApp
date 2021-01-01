@@ -31,13 +31,13 @@ def submit_analysis_data():
 
 @app.route('/download_analysis_data/<path:filename>', methods=['GET', 'POST'])
 def download_analysis_data(filename):
-    return redirect("/analysis_view")
-    #return send_from_directory(directory=os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'], "/".join(filename.split("/")[:-1])), filename=filename.split("/")[-1])
+    #return redirect("/analysis_view")
+    return send_from_directory(directory=os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'], "/".join(filename.split("/")[:-1])), filename=filename.split("/")[-1])
 
 @app.route('/delete_analysis_data_file/<int:id>-<int:patient_id>-<int:panel_id>-<name>', methods=['GET', 'POST'])
 def delete_analysis_data_file(id, patient_id, panel_id, name):
     update_patient_panels = patients.Patient_panels.query.get((id, patient_id, panel_id))
-    #os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'], getattr(update_patient_panels,name)))
+    os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'], getattr(update_patient_panels,name)))
     setattr(update_patient_panels , name, None)
-    #db.session.commit()
+    db.session.commit()
     return redirect("/analysis_view")
