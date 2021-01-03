@@ -35,6 +35,7 @@ def patient(id):
         return redirect("/bad_request")
 
 # Add or Update Users
+@csrf.exempt
 @app.route('/patients_add_update', defaults={'id':0}, methods = ['GET', 'POST'])
 @app.route('/patients_add_update/<int:id>', methods = ['GET', 'POST'])
 def patients_add_update(id):
@@ -44,7 +45,7 @@ def patients_add_update(id):
         all_data = data.to_dict()
         if "panel" in data.keys():
             del all_data['panel']
-
+        del all_data['csrf_token']
         # update patient information
         if id != 0:
             update_patient = patients.Patients.query.get(id)
@@ -90,7 +91,6 @@ def patients_view():
         patients_panels_refid = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels.id).filter(
             patients.Patient_panels.panel_id == panels.Panels.id,
             patients.Patient_panels.patient_id == patients.Patients.id).order_by(patients.Patients.id).all()
-        patients_panels_refid = []
         return render_template('patients_view.html', patients_panels_refid= patients_panels_refid)
     else:
         return redirect("/bad_request")

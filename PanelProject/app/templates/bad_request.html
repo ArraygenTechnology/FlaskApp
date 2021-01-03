@@ -18,7 +18,7 @@
 /* arrows */
 
 body, .login-page{
-  background-image: url("{{ url_for('static', filename='dist/img/HTTP-Error-400-mobile.png') }}");
+  background-image: url("{{ url_for('static', filename=img[1]) }}");
   background-position: center;
   background-size: cover;
 }
@@ -27,7 +27,7 @@ body, .login-page{
 /* On screens that are 600px wide or less, the background color is olive */
 @media screen and (min-width: 600px) {  
   body, .login-page{
-    background-image: url("{{ url_for('static', filename='dist/img/HTTP-Error-400.png') }}");
+    background-image: url("{{ url_for('static', filename=img[0]) }}");
     background-position: center;
     background-size: cover;
   }

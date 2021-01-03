@@ -2,6 +2,7 @@ from . import *
 from .models import sys_users
 
 # Login
+@csrf.exempt
 @app.route("/sys_user_login", methods = ['POST'])
 def sys_user_login():
     if request.method == 'POST':
@@ -11,6 +12,7 @@ def sys_user_login():
         if user != None:
             user = sys_users.Users.query.filter(sys_users.Users.email == email, sys_users.Users.password == password).first()
             if user != None:
+
                 session['login_id'] = user.email
                 session['role'] = user.role
                 session['l_name'] = user.l_name
@@ -36,6 +38,7 @@ def sys_user_logout():
     return redirect("/")
 
 # Add or Update Users
+@csrf.exempt
 @app.route('/sys_users_add_update', defaults={'id':0}, methods = ['GET', 'POST'])
 @app.route('/sys_users_add_update/<int:id>', methods = ['GET', 'POST'])
 def sys_users_add_update(id):

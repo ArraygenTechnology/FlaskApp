@@ -22,6 +22,7 @@
     <div class="content">
       <div class="container-fluid">
          <form method="post" action="{% if patient is defined %}{{ url_for('patients_add_update', id = patient.id) }}{% else %}{{ url_for('patients_add_update') }}{% endif %} ">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="row">
            <div class="col-md-12">
                   {% include "flash_alert.html" ignore missing %}

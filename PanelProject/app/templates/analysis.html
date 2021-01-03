@@ -53,6 +53,7 @@
                       {% set counter = loop.index %}
                       <tr>
                         <form method="post" action="/submit_analysis_data" enctype = "multipart/form-data">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                           <td>{{patient_panel[0].patient_id}}</td>
                           <td>{{patient_panel[0].f_name}} {{patient_panel[0].l_name}}</td>
                           <td>{{patient_panel[1].name}} </td>

@@ -36,6 +36,7 @@
                 {% include "flash_alert.html" ignore missing %}
 
                 <form method="post" action="{% if user is defined %}{{ url_for('sys_users_add_update', id = user.id) }}{% else %}{{ url_for('sys_users_add_update') }}{% endif %} ">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                   <table class="table  table-sm table-borderless">
                     <tr>
                       <th class="text-right" style="width:25%;"><span class="text-danger">*</span> User Name : </th>
