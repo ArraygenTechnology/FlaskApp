@@ -4,7 +4,7 @@ class Config(object):
     TESTING = False
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'guess'
     UPLOAD_FOLDER = "app/static/uploads"
-    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = False
     SESSION_PERMANENT = False
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', "csv", "xls", "xlsx"}
     SQLALCHEMY_DATABASE_URI = "mysql+mysqldb://admin:Arraygen123$@paneldb.cpquggjyqqa1.ap-south-1.rds.amazonaws.com/panel_project"

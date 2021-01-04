@@ -49,7 +49,13 @@
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                  <input type="date" class="form-control current_date" name="date"  value="{% if patient is defined %}{{ patient.date }}{% endif %}" required readonly>
+                                <div class="input-group date" id="date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input current_date" data-target="#date" n name="date"  value="{% if patient is defined %}{{ patient.date }}{% endif %}" required readonly />
+                                    <div class="input-group-append" data-target="#date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                  <!-- <input type="date" class="form-control current_date"> -->
                                 </div>
                               </div>
                             </div>
@@ -124,7 +130,13 @@
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                  <input type="date" class="form-control dob" name="dob"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required>
+                                <div class="input-group date" id="dob" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input dob" data-target="#dob" id="dob_d" name="dob"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required />
+                                    <div class="input-group-append" data-target="#dob" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                  <!-- <input type="date" class="form-control " > -->
                               </div>
                             </div>
                           </div>
@@ -230,7 +242,13 @@
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                  <input type="date" class="form-control " name="collection_date"  value="{% if patient is defined %}{{ patient.collection_date }}{% endif %}" required>
+                                <div class="input-group date" id="c_date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#c_date" name="collection_date"  value="{% if patient is defined %}{{ patient.collection_date }}{% endif %}" required />
+                                    <div class="input-group-append" data-target="#c_date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                  <!-- <input type="date" class="form-control " > -->
                               </div>
                             </div>
                           </div>
@@ -242,7 +260,13 @@
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                  <input type="date" class="form-control" name="received_date"  value="{% if patient is defined %}{{ patient.received_date }}{% endif %}" required>
+                                <div class="input-group date" id="r_date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#r_date" name="received_date"  value="{% if patient is defined %}{{ patient.received_date }}{% endif %}" required />
+                                    <div class="input-group-append" data-target="#r_date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                                 <!--  <input type="date" class="form-control" > -->
                               </div>
                             </div>
                           </div>
@@ -289,7 +313,7 @@
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control age" placeholder="" name="age"  value="{% if patient is defined %}{{ patient.age }}{% endif %}" required>
+                                <input type="text" class="form-control age" placeholder="" name="age"  value="{% if patient is defined %}{{ patient.age }}{% endif %}" required readonly>
                               </div>
                             </div>
                           </div>
@@ -325,7 +349,7 @@
                            <div class="row">
                             <div class="col-sm-12">
                               <div class="form-group">
-                                <input type="text" class="form-control bmi" placeholder="" name="bmi"  value="{% if patient is defined %}{{ patient.bmi }}{% endif %}" required>
+                                <input type="text" class="form-control bmi" placeholder="" name="bmi"  value="{% if patient is defined %}{{ patient.bmi }}{% endif %}" required readonly>
                               </div>
                             </div>
                           </div>

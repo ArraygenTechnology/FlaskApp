@@ -1,4 +1,4 @@
-from .. import db
+from .. import db , datetime
 from .panels import Panels
 
 class Patients(db.Model):
@@ -44,3 +44,4 @@ class Patient_panels(db.Model):
     dna_results = db.Column(db.String(255), nullable= True)
     blood_results = db.Column(db.String(255), nullable= True)
     allergy_results = db.Column(db.String(255), nullable= True)
+    submitted_date = db.Column(db.DateTime, default=datetime.datetime.now())

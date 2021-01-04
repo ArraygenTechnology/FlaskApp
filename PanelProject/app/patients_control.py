@@ -88,7 +88,7 @@ def patients_add_update(id):
 @app.route('/patients_view')
 def patients_view():
     if "login_id" in session:
-        patients_panels_refid = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels.id).filter(
+        patients_panels_refid = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels).filter(
             patients.Patient_panels.panel_id == panels.Panels.id,
             patients.Patient_panels.patient_id == patients.Patients.id).order_by(patients.Patients.id).all()
         return render_template('patients_view.html', patients_panels_refid= patients_panels_refid)

@@ -81,8 +81,14 @@
                       <td>
                          <div class="row">
                           <div class="col-sm-8">
-                            <div class="form-group">
-                                <input type="date" class="form-control dob"name="dob"  value="{% if user is defined %}{{ user.dob }}{% endif %}" max="" required>                             
+                           <!--  <div class="form-group">
+                                <input type="date" class="form-control dob"  value="{% if user is defined %}{{ user.dob }}{% endif %}" max="" required>                             
+                            </div> -->
+                            <div class="input-group date" id="dob" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#dob" value="{% if user is defined %}{{ user.dob }}{% endif %}" name="dob" required />
+                                <div class="input-group-append" data-target="#dob" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
                             </div>
                           </div>
                         </div>

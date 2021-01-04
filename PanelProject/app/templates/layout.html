@@ -265,19 +265,12 @@
     var month = d.getMonth()+1;
     var day = d.getDate();
 
-    var output = d.getFullYear() + '-' +
-        (month<10 ? '0' : '') + month + '-' +
-        (day<10 ? '0' : '') + day;
-    $(".dob").attr("max", output);
+    var output = (month<10 ? '0' : '') + month + '/' +
+        (day<10 ? '0' : '') + day + '/' +d.getFullYear() ;
+
     if($(".current_date").val() == ""){
       $(".current_date").val(output);
     }
-  });
-  $( ".dob" ).change(function() {
-    dob = new Date($('.dob').val());
-    var today = new Date();
-    var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
-    $('.age').val(age);
   });
 
   $( ".weight, .height" ).change(function() {
@@ -383,7 +376,38 @@ $('#userAddress').on('show.bs.modal', function (event) {
       locale: {
         format: 'YYYY/MM/DD'
       }
-    })
+    });
+
+    //Date range picker
+    $('#dob').datetimepicker({
+        format: 'L',
+        setDate : $('#dob').val(),
+        maxDate : new Date()
+    });
+    $("#dob").on("change.datetimepicker", ({date, oldDate}) => {              
+                 //Use date and oldDate here
+                 dob = new Date(date);
+                 var today = new Date();
+                  var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+                  $('.age').val(age);
+    });
+
+    $('#c_date').datetimepicker({
+        format: 'L',
+        setDate : $('#c_date').val()
+    });
+
+    $('#r_date').datetimepicker({
+        format: 'L',
+        setDate : $('#c_date').val()
+    });
+
+    //Date range picker
+    $('#date').datetimepicker({
+        format: 'L',
+        setDate : $('#date').val(),
+        disable :true
+    });
 </script>
 </body>
 </html>

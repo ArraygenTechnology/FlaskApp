@@ -24,6 +24,7 @@ def submit_analysis_data():
                     filename = os.path.join("analysis_data", secure_filename(ref_id+"_"+name+file.filename[last_index:]))
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
                     setattr(update_patient_panels, name , filename)
+            setattr(update_patient_panels, 'submitted_date' , datetime.datetime.now())
             db.session.commit()
             flash("Files Uploaded Successfully", "info")
         return redirect("/analysis_view")
