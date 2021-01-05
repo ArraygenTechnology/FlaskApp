@@ -1,5 +1,4 @@
-from .. import db , datetime
-from .panels import Panels
+from .. import db , datetime , ma
 
 class Patients(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -27,7 +26,7 @@ class Patients(db.Model):
     additional2 = db.Column(db.String(255), nullable=True)
     additional3 = db.Column(db.String(255), nullable=True)
     remark = db.Column(db.Text(), nullable=True)
-    panels = db.relationship(Panels, secondary='patient_panels')
+    panels = db.relationship('Panels', secondary='patient_panels')
 
 class Patient_panels(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -44,4 +43,25 @@ class Patient_panels(db.Model):
     dna_results = db.Column(db.String(255), nullable= True)
     blood_results = db.Column(db.String(255), nullable= True)
     allergy_results = db.Column(db.String(255), nullable= True)
-    submitted_date = db.Column(db.DateTime, default=datetime.datetime.now())
+    submitted_date = db.Column(db.DateTime, default="")
+    first_result = db.Column(db.String(255), nullable=True)
+    result_status = db.Column(db.String(255), nullable= False, default="Pending")
+    technician_status = db.Column(db.String(255), nullable= True)
+    technician_status_date = db.Column(db.DateTime, default="")
+    physician_note = db.Column(db.Text(), nullable=True)
+    include_note = db.Column(db.String(255), nullable= True)
+    physician_status = db.Column(db.String(255), nullable= True)
+    physician_status_date = db.Column(db.DateTime, default="")
+    second_result = db.Column(db.String(255), nullable=True)
+    send = db.Column(db.String(255), nullable=True)
+    send_date = db.Column(db.DateTime,  default="")
+    print_and_issue = db.Column(db.String(255), nullable=True)
+    print_and_issue_date = db.Column(db.DateTime,  default="")
+
+class PatientsSchema(ma.Schema):
+    class Meta:
+        model = Patients
+
+class Patient_panelsSchema(ma.Schema):
+    class Meta:
+        model = Patient_panels

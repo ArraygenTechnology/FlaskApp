@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json, os, datetime
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import CSRFProtect, CSRFError
+from flask_marshmallow import Marshmallow
 
 csrf = CSRFProtect()
 
@@ -12,7 +13,7 @@ if app.config["ENV"] == "production":
 else:
     app.config.from_object("config.DevelopmentConfig")
 csrf.init_app(app)
-
+ma = Marshmallow(app)
 db = SQLAlchemy(app)
 
 def allowed_file(filename):

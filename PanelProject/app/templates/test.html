@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin | Dashboard </title>
+  
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -259,6 +260,10 @@
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <!-- Users module display date in form -->
 
+<!-- Ajax CDN -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+
 <script>
   $(function() {
     var d = new Date();
@@ -410,25 +415,6 @@ $('#userAddress').on('show.bs.modal', function (event) {
         disable :true
     });
 </script>
-<!-- Ajax CDN -->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-
-<script type="text/javascript">
-  function PatientViewModal(elm) {
-    var csrf_token = "{{ csrf_token() }}";
-    $.ajax({
-        url: '/getPatientById',
-        data: {
-            id: $(elm).attr('data-id'),
-            csrf_token : csrf_token
-        },
-        type: 'POST',
-        success: function(res) {
-           //alert(res);
-          console.log(res);
-        }
-    });
-}
-</script>
 </body>
 </html>
+

@@ -85,12 +85,12 @@
                     <tr>
                       <th>Patient Id</th>
                       <th>Patient Name</th>
+                      <!-- <th>Email ID</th> -->
                       <th>Test Name</th>
                       <th>Date Submitted</th>
                       <th>Result Status</th>
-                      <th>Physician Status</th>
-                      <th>Date Physician Reviewed</th>
-                      <th>Email ID</th>
+                      <th>View</th>
+                      <th>Technician Status</th>
                       <th>Action</th>
                     </tr>
                     </thead>
@@ -98,14 +98,25 @@
                     {% for patient_panel in patients_panels_refid %}
                      <tr>
                         <td>{{patient_panel[0].patient_id}}</td>
-                        <td>{{patient_panel[0].f_name}} {{patient_panel[0].l_name}}</td>
+                        <td><a href="" data-toggle="modal" data-target="#viewPatientDetailsModal" data-id={{patient_panel[0].id}} onclick="PatientViewModal(this)" >{{patient_panel[0].f_name}} {{patient_panel[0].l_name}}</a></td>
+                        <!-- <td>{{patient_panel[0].email}}</td> -->
                         <td>{{patient_panel[1].name}} </td>
-                        <td>{{patient_panel[2].submitted_date.strftime('%m/%d/%Y')}} </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{patient_panel[0].email}}</td>
+                        <td>{% if patient_panel[2].submitted_date != None %}{{patient_panel[2].submitted_date.strftime('%m/%d/%Y')}}{% endif %}</td>
+                        <td>{{patient_panel[2].result_status}}</td>
+                        <td>{% if patient_panel[2].result_status == "Done" %} <a href=" {{patient_panel[2].first_result}}" target="_blank">View</a> {% endif %}</td>
                         <td>
+                          <form action="" method="post">
+                            <div class="form-group">
+                              <select class="form-control">
+                                <option value=""> -- Select Status --</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                              </select>                              
+                            </div>
+                          </form>
+                        </td>
+                        <td>
+                          <a href=""><i class="fa fa-user-md"></i></a>
                           <a href="" onclick="return confirm('Are you sure you want to send this result?');"> <i class="fas fa-paper-plane" title="Send Results"></i></a>
                           <a href="" onclick="return confirm('Are you sure you want to print this result?');"> <i class="fas fa-print" title="Print Results"></i></a>
                           
@@ -129,5 +140,25 @@
       <!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    
+    <div class="modal fade" id="viewPatientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Personal Details</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <b>Gender : </b> <span id="modalPatientGender"></span><br/>
+
+              <b>Email Id : </b> <span id="modalPatientEmailId"></span><br/>
+
+              <b>Contact No : </b> <span id="modalPatientContactNo"></span><br/>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}

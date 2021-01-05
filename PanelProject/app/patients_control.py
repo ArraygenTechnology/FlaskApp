@@ -71,6 +71,9 @@ def patients_add_update(id):
             exists =  patients.Patients.query.filter_by(email=all_data.get('email')).first()
             if exists == None:
                 # creating object
+                print(all_data)
+                if all_data.get("date") == None:
+                    all_data["date"] = datetime.datetime.now().strftime("%d/%m/%Y")
                 patient = patients.Patients(**all_data)
                 # get panels selected and appending it to parameter so that it can add it to relational table
                 patient_panels = data.getlist('panel')
@@ -117,5 +120,15 @@ def patient_delete(id):
         db.session.commit()
         flash("User Deleted Successfully".title(), "info")
         return redirect("/patient")
+    else:
+        return redirect("/bad_request")
+
+# For Ajax
+@csrf.exempt
+@app.route('/getPatientById', methods=['POST'])
+def getPatientById():
+    if "login_id" in session:
+        patient = patients.Patients.query.get(request.form['id'])
+        return "Hello"
     else:
         return redirect("/bad_request")
