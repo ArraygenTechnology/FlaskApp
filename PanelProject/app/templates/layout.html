@@ -37,7 +37,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-
+  <!-- summernote -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/summernote/summernote-bs4.min.css') }}">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -222,7 +223,8 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{{ url_for('static', filename='dist/js/demo.js') }}"></script>
 
-
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='dist/js/adminlte.min.js') }}"></script>
 <!-- Select2 -->
 <script src="{{ url_for('static', filename='plugins/select2/js/select2.full.min.js') }}"></script>
 <!-- Bootstrap4 Duallistbox -->
@@ -258,7 +260,14 @@
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <!-- Users module display date in form -->
-
+<!-- Summernote -->
+<script src="{{ url_for('static', filename='plugins/summernote/summernote-bs4.min.js') }}"></script>
+<script>
+  $(function () {
+    //Add text editor
+    $('#compose-textarea').summernote()
+  })
+</script>
 <script>
   $(function() {
     var d = new Date();
@@ -382,8 +391,7 @@ $('#userAddress').on('show.bs.modal', function (event) {
     //Date range picker
     $('#dob').datetimepicker({
         format: 'L',
-        setDate : $('#dob').val(),
-        maxDate : new Date()
+        setDate : $('#dob').val()
     });
     $("#dob").on("change.datetimepicker", ({date, oldDate}) => {              
                  //Use date and oldDate here
@@ -410,22 +418,51 @@ $('#userAddress').on('show.bs.modal', function (event) {
         disable :true
     });
 </script>
+
 <!-- Ajax CDN -->
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-
 <script type="text/javascript">
-  function PatientViewModal(elm) {
-    var csrf_token = "{{ csrf_token() }}";
+  
+function PatientViewModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
     $.ajax({
         url: '/getPatientById',
         data: {
-            id: $(elm).attr('data-id'),
-            csrf_token : csrf_token
+            csrf_token : csrftoken,
+            id: $(elm).attr('data-id')
         },
         type: 'POST',
         success: function(res) {
-           //alert(res);
-          console.log(res);
+            var res = JSON.parse(res);
+            $('#modalPatientGender').html(res.gender);
+            $('#modalPatientEmailId').html(res['email']);
+            $('#modalPatientContactNo').html(res['contact_no']);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function PatientTechnicianStatus(i) {
+  //alert(i);
+  var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+      
+        url: '/updatePatientTechnicianStatus',
+        data: {
+            csrf_token : csrftoken,
+            id : $('#pantient_panel_id'+i).val(),
+            patient_id  : $('#patient_id'+i).val(),
+            panel_id  : $('#panel_id'+i).val(),
+            technician_status  : $('#technician_status'+i).val()
+        },
+        type: 'POST',
+        success: function(res) {
+           $('#status_update_msg'+i).html(res)
+        },
+        error: function(error) {
+            console.log(error);
         }
     });
 }

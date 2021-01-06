@@ -131,7 +131,7 @@
                             <div class="col-sm-12">
                               <div class="form-group">
                                 <div class="input-group date" id="dob" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input dob" data-target="#dob" id="dob_d" name="dob"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required />
+                                    <input type="text" class="form-control datetimepicker-input dob" data-target="#dob" name="dob"  value="{% if patient is defined %}{{ patient.dob }}{% endif %}" required />
                                     <div class="input-group-append" data-target="#dob" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -507,7 +507,7 @@
                       <td>{{ patient.patient_id }}</td>
                       <td>{{ patient.f_name }} {{ patient.l_name }}</td>
                       <td>{% for panel in patient.panels %}{{panel.name}} {% endfor %}</td>
-                      <td>{{ patient.date }}</td>
+                      <td>{% if patient.date != None %}{{patient.date.strftime('%m/%d/%Y')}}{% endif %}</td>
                       <td>{{ patient.contact_no }}</td>
                       <td>{{ patient.email }}</td>
                       <td>

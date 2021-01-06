@@ -1,6 +1,7 @@
 from . import *
 from .models import patients, panels
 
+
 @app.route('/patient/', defaults={'id': 0})
 @app.route('/patient/<id>')
 def patient(id):
@@ -71,9 +72,6 @@ def patients_add_update(id):
             exists =  patients.Patients.query.filter_by(email=all_data.get('email')).first()
             if exists == None:
                 # creating object
-                print(all_data)
-                if all_data.get("date") == None:
-                    all_data["date"] = datetime.datetime.now().strftime("%d/%m/%Y")
                 patient = patients.Patients(**all_data)
                 # get panels selected and appending it to parameter so that it can add it to relational table
                 patient_panels = data.getlist('panel')
@@ -129,6 +127,22 @@ def patient_delete(id):
 def getPatientById():
     if "login_id" in session:
         patient = patients.Patients.query.get(request.form['id'])
-        return "Hello"
+        patient_schema = patients.PatientsSchema()
+        op = patient_schema.dumps(patient)
+        return jsonify(op)
+    else:
+        return redirect("/bad_request")
+
+
+# For Ajax
+@csrf.exempt
+@app.route('/updatePatientTechnicianStatus', methods=['POST'])
+def updatePatientTechnicianStatus():
+    if "login_id" in session:
+        update_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
+        setattr(update_patient_panels , "technician_status" , request.form['technician_status'])
+        setattr(update_patient_panels , "technician_status_date" , datetime.datetime.now())
+        db.session.commit()
+        return '<i class="fas fa-check"></i>'
     else:
         return redirect("/bad_request")
