@@ -133,6 +133,20 @@ def getPatientById():
     else:
         return redirect("/bad_request")
 
+@csrf.exempt
+@app.route('/sendEmail', methods=['POST'])
+def sendEmail():
+    if "login_id" in session:
+        print(request.form)
+        print(request.files)
+        msg = Message(request.form['subject'], sender='bioinformatics.arraygen.ak@gmail.com', recipients=[request.form['to']])
+        msg.body = request.form['message']
+        file = request.files['attachment']
+        msg.attach(secure_filename(file.filename), file.content_type, file.stream.read())
+        mail.send(msg)
+        return redirect("/patients_view")
+    else:
+        return redirect("/bad_request")
 
 # For Ajax
 @csrf.exempt
@@ -143,6 +157,20 @@ def updatePatientTechnicianStatus():
         setattr(update_patient_panels , "technician_status" , request.form['technician_status'])
         setattr(update_patient_panels , "technician_status_date" , datetime.datetime.now())
         db.session.commit()
-        return '<i class="fas fa-check"></i>'
+        patient_panel_schema = patients.Patient_panelsSchema()
+        op = patient_panel_schema.dumps(update_patient_panels)
+        return op
+    else:
+        return redirect("/bad_request")
+
+# For Ajax
+@csrf.exempt
+@app.route('/getPatientPhysicianDetails', methods=['POST'])
+def getPatientPhysicianDetails():
+    if "login_id" in session:
+        get_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
+        patient_panel_schema = patients.Patient_panelsSchema()
+        op = patient_panel_schema.dumps(get_patient_panels)
+        return jsonify(op)
     else:
         return redirect("/bad_request")

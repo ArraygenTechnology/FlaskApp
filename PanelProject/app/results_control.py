@@ -26,3 +26,18 @@ def results_view():
         return render_template('results_view.html', patients_panels_refid= patients_panels_refid)
     else:
         return redirect("/bad_request")
+
+@csrf.exempt
+@app.route('/updatePatientPhisicianDetails', methods=['POST'])
+def updatePatientPhisicianDetails():
+    if "login_id" in session:
+        update_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
+        setattr(update_patient_panels , "physician_status" , request.form['physician_status'])
+        setattr(update_patient_panels, "physician_note", request.form['physician_note'])
+        setattr(update_patient_panels, "include_note", request.form['include_note'])
+        setattr(update_patient_panels , "physician_status_date" , datetime.datetime.now())
+        db.session.commit()
+        flash("Details Updated Successfully")
+        return redirect("/results_view")
+    else:
+        return redirect("/bad_request")

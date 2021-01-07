@@ -104,8 +104,10 @@
                         <td>{{patient_panel[1].name}} </td>
                         <td>{% if patient_panel[2].submitted_date != None %}{{patient_panel[2].submitted_date.strftime('%m/%d/%Y')}}{% endif %}</td>
                         <td>{{patient_panel[2].result_status}}</td>
-                        <td>{% if patient_panel[2].result_status == "Done" %} <a href=" {{patient_panel[2].first_result}}" target="_blank">View</a> {% endif %}</td>
+                        <td>{% if patient_panel[2].result_status == "Done" %} <a href="{{patient_panel[2].first_result}}" target="_blank">View</a> {% endif %}</td>
                         <td>
+                        
+                          {% if patient_panel[2].result_status == "Done" %}
                             <form action="" method="post">
                               <div class="row">
                                 <div class="col-sm-8">
@@ -133,13 +135,14 @@
                               </div>
                             </div>
                           </form>
-                          
+                          {% endif %}
                         </td>
                         <td>
-                          <a href=""><i class="fa fa-user-md"></i></a>
-                          <a href="" onclick="return confirm('Are you sure you want to send this result?');"> <i class="fas fa-paper-plane" title="Send Results"></i></a>
-                          <a href="" onclick="return confirm('Are you sure you want to print this result?');"> <i class="fas fa-print" title="Print Results"></i></a>
-                          
+                          {% if patient_panel[2].result_status == "Done" %}
+                          <a href="" data-toggle="modal" data-target="#viewPatientPhysicianDetailsModal" data-id={{patient_panel[2].id}}  data-patient_id={{patient_panel[0].id}}  data-panel_id={{patient_panel[1].id}} onclick="PatientPhysicianDetails(this)"><i class="fa fa-user-md"></i></a>
+                          <a href="" data-toggle="modal" data-target="#viewPatientEmailModal" data-id={{patient_panel[0].id}} onclick="PatientEmailModal(this)" > <i class="fas fa-paper-plane" title="Send Results"></i></a>
+                          <a href=""   > <i class="fas fa-print" title="Print Results"></i></a>
+                          {% endif %}
                         </td>
                       </tr>
                     {% endfor %}
@@ -149,66 +152,6 @@
                 </div>              
               </div>
               <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-
-          <div class="col-md-9">
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h3 class="card-title">Compose New Message</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <div class="form-group">
-                  <input class="form-control" placeholder="To:">
-                </div>
-                <div class="form-group">
-                  <input class="form-control" placeholder="Subject:">
-                </div>
-                <div class="form-group">
-                    <textarea id="compose-textarea" class="form-control" style="height: 300px">
-                      <h1><u>Heading Of Message</u></h1>
-                      <h4>Subheading</h4>
-                      <p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain
-                        was born and I will give you a complete account of the system, and expound the actual teachings
-                        of the great explorer of the truth, the master-builder of human happiness. No one rejects,
-                        dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know
-                        how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again
-                        is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain,
-                        but because occasionally circumstances occur in which toil and pain can procure him some great
-                        pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise,
-                        except to obtain some advantage from it? But who has any right to find fault with a man who
-                        chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that
-                        produces no resultant pleasure? On the other hand, we denounce with righteous indignation and
-                        dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so
-                        blinded by desire, that they cannot foresee</p>
-                      <ul>
-                        <li>List item one</li>
-                        <li>List item two</li>
-                        <li>List item three</li>
-                        <li>List item four</li>
-                      </ul>
-                      <p>Thank you,</p>
-                      <p>John Doe</p>
-                    </textarea>
-                </div>
-                <div class="form-group">
-                  <div class="btn btn-default btn-file">
-                    <i class="fas fa-paperclip"></i> Attachment
-                    <input type="file" name="attachment">
-                  </div>
-                  <p class="help-block">Max. 32MB</p>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <div class="float-right">
-                  <button type="button" class="btn btn-default"><i class="fas fa-pencil-alt"></i> Draft</button>
-                  <button type="submit" class="btn btn-primary"><i class="far fa-envelope"></i> Send</button>
-                </div>
-                <button type="reset" class="btn btn-default"><i class="fas fa-times"></i> Discard</button>
-              </div>
-              <!-- /.card-footer -->
             </div>
             <!-- /.card -->
           </div>
@@ -240,5 +183,58 @@
         </div>
       </div>
     </div>
-    
+    <div class="modal fade" id="viewPatientEmailModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientEmailModalLabel" aria-hidden="true">
+      <form action="" method="post"  enctype='multipart/form-data'> <!-- sendEmail -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Message To <span id = "patientNameModal"></span></h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                  <input type="email" class="form-control" placeholder="To:" id ="toEmailModal" name="to">
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Subject:" name="subject">
+                </div>
+                <div class="form-group">
+                   <textarea id="editor1" placeholder="Enter Some Message" name="message"></textarea>
+                </div>
+                <div class="form-group">
+                  <div class="btn btn-default btn-file">
+                    <i class="fas fa-paperclip"></i> Attachment
+                    <input type="file" name="attachment">
+                  </div>
+                  <!-- <p class="help-block">Max. 32MB</p> -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" disable class="btn btn-primary">Send</button>
+            </div>
+        </div>
+      </div>
+      </form>
+    </div>
+
+    <div class="modal fade" id="viewPatientPhysicianDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Physician Updates</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <b>Physician Status : </b> <span id="modalPhysicianStatus"></span><br/>
+              <b>Date : </b> <span id="modalPhysicianStatusDate"></span><br/>
+              <b>Physician Note : </b> <span id="modalPhysicianNote"></span><br/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}

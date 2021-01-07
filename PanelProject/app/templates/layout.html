@@ -37,8 +37,13 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-  <!-- summernote -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/summernote/summernote-bs4.min.css') }}">
+  
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/toastr/toastr.min.css') }}">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -256,17 +261,49 @@
 <script src="{{ url_for('static', filename='plugins/jszip/jszip.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/pdfmake/pdfmake.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/pdfmake/vfs_fonts.js') }}"></script>
+
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ url_for('static', filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <!-- Users module display date in form -->
-<!-- Summernote -->
-<script src="{{ url_for('static', filename='plugins/summernote/summernote-bs4.min.js') }}"></script>
+<!-- CK Editor -->
+<script src="{{ url_for('static', filename='plugins/ckeditor/ckeditor.js') }}"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script src="{{ url_for('static', filename='plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
+<!-- SweetAlert2 -->
+<script src="{{ url_for('static', filename='plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ url_for('static', filename='plugins/toastr/toastr.min.js') }}"></script>
+
+
+<!-- Page specific script -->
+<script>
+    var Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    function convertDate(date){
+      if(date != null){
+
+       date = new Date(date);
+       return (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear())
+
+      }else{
+        return "No Date Found"
+      }
+    }
+</script>
 <script>
   $(function () {
-    //Add text editor
-    $('#compose-textarea').summernote()
-  })
+    // Replace the <textarea id="editor1"> with a CKEditor
+    // instance, using default configuration.
+    CKEDITOR.replace('editor1')
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+  });
+
 </script>
 <script>
   $(function() {
@@ -302,7 +339,7 @@
     function dna_resultFunc(e,i){
         //alert(i);
         var name = e.files[0].name; 
-        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt")) ){
           $("#dna_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>'); 
         }else{
           $("#dna_result"+i).val("");
@@ -314,7 +351,7 @@
     function blood_resultFunc(e,i){
         //alert(i);
         var name = e.files[0].name; 
-        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
           $("#blood_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');  
         }else{
           $("#blood_result"+i).val("");
@@ -325,7 +362,7 @@
 
     function allergy_resultFunc(e,i){
         var name = e.files[0].name; 
-        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls"))){
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
           $("#allergy_result_name"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>'); 
         }else{
           $("#allergy_result"+i).val("");
@@ -418,9 +455,6 @@ $('#userAddress').on('show.bs.modal', function (event) {
         disable :true
     });
 </script>
-
-<!-- Ajax CDN -->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript">
   
 function PatientViewModal(elm) {
@@ -437,13 +471,13 @@ function PatientViewModal(elm) {
             $('#modalPatientGender').html(res.gender);
             $('#modalPatientEmailId').html(res['email']);
             $('#modalPatientContactNo').html(res['contact_no']);
+            $('#modalPatientEthnicity').html(res['ethnicity']);
         },
         error: function(error) {
             console.log(error);
         }
     });
 }
-
 function PatientTechnicianStatus(i) {
   //alert(i);
   var csrftoken = "{{ csrf_token() }}";
@@ -459,7 +493,102 @@ function PatientTechnicianStatus(i) {
         },
         type: 'POST',
         success: function(res) {
-           $('#status_update_msg'+i).html(res)
+          var res = JSON.parse(res);
+          Toast.fire({
+            icon: 'success',
+            title: " "+res.patient.patient_id+" "+res.panel.name+" Report Technician Status Updated Sucessfully"
+          });
+           //$('#status_update_msg'+i).html(res)
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function PatientEmailModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getPatientById',
+        data: {
+            csrf_token : csrftoken,
+            id: $(elm).attr('data-id')
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+            $('#patientNameModal').html(res.f_name+" "+res.l_name);
+            $('#toEmailModal').val(res['email']);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function PatientPhysicianDetails(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getPatientPhysicianDetails',
+        data: {
+            csrf_token : csrftoken,            
+            id : $(elm).attr('data-id'),
+            patient_id  : $(elm).attr('data-patient_id'),
+            panel_id  : $(elm).attr('data-panel_id')
+        },
+        type: 'POST',
+        success: function(res) {
+
+            var res = JSON.parse(res);  
+
+            if (res.physician_status == null){
+              $('#modalPhysicianStatus').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianStatus').html(res.physician_status);
+            }
+
+            if (res.physician_note == null){
+              $('#modalPhysicianNote').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianNote').html(res.physician_note);
+            }
+
+            if (res.physician_status_date == null){
+              $('#modalPhysicianStatusDate').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianStatusDate').html(convertDate(res.physician_status_date));
+            }
+            
+            
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+}
+
+function PhysiciantNoteModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getPatientPhysicianDetails',
+        data: {
+            csrf_token : csrftoken,            
+            id : $(elm).attr('data-id'),
+            patient_id  : $(elm).attr('data-patient_id'),
+            panel_id  : $(elm).attr('data-panel_id')
+        },
+        type: 'POST',
+        success: function(res) {
+
+            var res = JSON.parse(res);  
+            $('#id').val(res.id);
+            $('#patient_id').val(res.patient.id);
+            $('#panel_id').val(res.panel.id);
+            $('#physician_status').val(res.physician_status);
+            $('input[name=include_note]').removeAttr('checked');
+            $("input[name=include_note][value=" + res.include_note + "]").attr('checked', 'checked');
+            CKEDITOR.instances.editor1.setData(res.physician_note);//$('#editor1').val();
+            $('#physician_status_date').html(convertDate(res.physician_status_date));
         },
         error: function(error) {
             console.log(error);
@@ -467,5 +596,6 @@ function PatientTechnicianStatus(i) {
     });
 }
 </script>
+
 </body>
 </html>

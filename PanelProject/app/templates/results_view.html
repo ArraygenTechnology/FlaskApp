@@ -88,26 +88,26 @@
                     <tr>
                       <th>Patient Id</th>
                       <th>Patient Name</th>
-                      <th>Gender</th>
-                      <th>Ethnicity</th>
                       <th>Test Name</th>
-                      <th>Status</th>
-                      <th>Action</th>
+                      <th>View</th>
+                      <th>Details</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for patient_panel in patients_panels_refid %}
                      <tr>
                         <td>{{patient_panel[0].patient_id}}</td>
-                        <td>{{patient_panel[0].f_name}} {{patient_panel[0].l_name}}</td>
-                        <td>{{patient_panel[0].gender}}</td>
-                        <td>{{patient_panel[0].ethnicity}}</td>
-                        <td>{{patient_panel[1].name}} </td>
-                        <td></td>
                         <td>
-                          <a href="" target="_blank"> <i class="fas fa-eye" title="View Results"></i></a>
-                          <a href="" onclick="return confirm('Are you sure you want to print this result?');"> <i class="fas fa-print" title="Print Results"></i></a>
-                          
+                          <a href="" data-toggle="modal" data-target="#viewPatientDetailsModal" data-id={{patient_panel[0].id}} onclick="PatientViewModal(this)" >
+                            {{patient_panel[0].f_name}} {{patient_panel[0].l_name}}
+                          </a>
+                        </td>
+                        <td>{{patient_panel[1].name}} </td>
+                        <td><a href=""> View </a></td>
+                        <td>
+                          <a href="" data-toggle="modal" data-target="#viewPhysiciantNoteModal"  data-id="{{patient_panel[2]}}"  data-patient_id="{{patient_panel[0].id}}"  data-panel_id="{{patient_panel[1].id}}" onclick="PhysiciantNoteModal(this)" >
+                             Add/Edit
+                          </a>
                         </td>
                       </tr>
                     {% endfor %}
@@ -128,5 +128,79 @@
       <!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-    
+    <div class="modal fade" id="viewPatientDetailsModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientDetailsLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Personal Details</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <b>Gender : </b> <span id="modalPatientGender"></span><br/>
+
+              <b>Ethnicity : </b> <span id="modalPatientEthnicity"></span><br/>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="viewPhysiciantNoteModal" tabindex="-1" role="dialog" aria-labelledby="viewPhysiciantNoteModalLabel" aria-hidden="true">
+      <!--  /updatePatientPhisicianDetails -->
+      <form action="/" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Update Below Details</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="id" name="id">
+                <input type="hidden" id="patient_id" name="patient_id">
+                <input type="hidden" id="panel_id" name="panel_id">
+                <div class="row">
+                  <div class="col-sm-6">                    
+                    <div class="form-group">
+                      <select class="form-control" id="physician_status" name = "physician_status">
+                          <option value=""> -- Select Status --</option>
+                          <option value="Approved">Approved</option>
+                          <option value="Rejected">Rejected</option>
+                      </select>   
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <div class="form-group">
+                        <div class="custom-control custom-radio">
+                          <input class="custom-control-input" type="radio" id="customRadio1" value = "Yes"  name="include_note" required>
+                          <label for="customRadio1" class="custom-control-label" >Include Note In Report </label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                          <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio2" name="include_note" value="No">
+                          <label for="customRadio2" class="custom-control-label">Don't Include Note In Report </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label> Physician Note : </label>
+                   <textarea id="editor1" name="physician_note"><div id="physician_note"></div></textarea>
+                </div>
+                <p class="float-right">Last Updated On : <span id ="physician_status_date"></span></p>
+                <button type="submit" disable class="btn btn-primary">Submit</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                
+            </div>
+        </div>
+      </div>
+      </form>
+    </div>
 {% endblock %}

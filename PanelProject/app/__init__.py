@@ -4,6 +4,7 @@ import json, os, datetime
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_marshmallow import Marshmallow
+from flask_mail import Mail, Message
 
 csrf = CSRFProtect()
 
@@ -15,10 +16,15 @@ else:
 csrf.init_app(app)
 ma = Marshmallow(app)
 db = SQLAlchemy(app)
-
+mail = Mail(app)
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app.before_request
+def set_session_timeout():
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(minutes=30)
 
 @app.errorhandler(CSRFError)
 def csrf_error(reason):
