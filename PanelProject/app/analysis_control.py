@@ -45,3 +45,22 @@ def delete_analysis_data_file(id, patient_id, panel_id, name):
     setattr(update_patient_panels , name, None)
     db.session.commit()
     return redirect("/analysis_view")
+
+# For Ajax
+@csrf.exempt
+@app.route('/getReportFields', methods=['POST'])
+def getReportFields():
+    if "login_id" in session:
+        get_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
+        patient_panel_schema = patients.Patient_panelsSchema()
+        op = patient_panel_schema.dumps(get_patient_panels)
+        f = open(os.path.join(app.config['UPLOAD_FOLDER'],"r"
+                                                          "eport_form_fields/Blood.txt"))
+        data = f.read()
+        d = json.loads(op)
+        print(type(d))
+        print(data)
+        f.close()
+        return jsonify(op) #, jsonify(data)
+    else:
+        return redirect("/bad_request")

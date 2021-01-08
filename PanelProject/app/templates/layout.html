@@ -595,6 +595,51 @@ function PhysiciantNoteModal(elm) {
         }
     });
 }
+
+function ReportFormModal(elm) {
+  var report_type = $(elm).attr('data-report')
+  
+            var formData = ''; 
+ var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getReportFields',
+        data: {
+            csrf_token : csrftoken,            
+            id : $(elm).attr('data-id'),
+            patient_id  : $(elm).attr('data-patient_id'),
+            panel_id  : $(elm).attr('data-panel_id'),
+            report_type  : report_type,
+        },
+        type: 'POST',
+        success: function(res) {
+
+            var res12 = JSON.parse(res); 
+            var res = res12[0]; 
+            //alert(res.id)  
+            $('#id').val(res.id);
+            $('#patient_id').val(res.patient.id);
+            $('#panel_id').val(res.panel.id);
+            $('#modal_report_type').html(report_type);
+            $('#report_type').val(report_type); 
+            $('#submitted_date').html(convertDate(res.submitted_date));
+
+              alert(res);
+                       /* // ITERATING THROUGH OBJECTS 
+                        $.each(data, function (key, value) { 
+                            formData += '<div class="form-group"><label>';
+                            formData += value.name;
+                            formData += '</label><input type="text" class="form-control"  name="'+value.name+'" placeholder="'+value.name+'"> </div>';
+                          }
+*/
+                        //INSERTING ROWS INTO TABLE  
+                        $('#formData').html(formData); 
+
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
 </script>
 
 </body>

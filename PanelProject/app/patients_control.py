@@ -174,3 +174,5 @@ def getPatientPhysicianDetails():
         return jsonify(op)
     else:
         return redirect("/bad_request")
+
+
