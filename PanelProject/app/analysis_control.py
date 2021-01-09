@@ -4,9 +4,20 @@ from .models import patients, panels
 @app.route('/analysis_view')
 def analysis_view():
     if "login_id" in session:
-        patients_panels_refid = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels).filter(patients.Patient_panels.panel_id == panels.Panels.id,
-            patients.Patient_panels.patient_id == patients.Patients.id).order_by(patients.Patients.id).all()
-        return render_template('analysis.html', patients_panels_refid= patients_panels_refid )
+        technician_status = "Rejected"
+        patients_panels_refid_rejected = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels).filter(patients.Patient_panels.panel_id == panels.Panels.id,
+            patients.Patient_panels.patient_id == patients.Patients.id,
+            patients.Patient_panels.technician_status == technician_status).order_by(patients.Patients.id).all()
+        #print(patients_panels_refid_rejected)
+        patients_panels_refid_not_rejected = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels).filter(
+            patients.Patient_panels.panel_id == panels.Panels.id,
+            patients.Patient_panels.patient_id == patients.Patients.id,
+            ( (patients.Patient_panels.technician_status  == None) | (patients.Patient_panels.technician_status != technician_status))
+        ).order_by(patients.Patients.id).all()
+
+        return render_template('analysis.html',
+                               patients_panels_refid_not_rejected = patients_panels_refid_not_rejected,
+                               patients_panels_refid_rejected = patients_panels_refid_rejected)
     else:
         return redirect("/bad_request")
 
@@ -46,6 +57,39 @@ def delete_analysis_data_file(id, patient_id, panel_id, name):
     db.session.commit()
     return redirect("/analysis_view")
 
+@csrf.exempt
+@app.route('/submitReport', methods=['POST'])
+def submitReport():
+    if "login_id" in session:
+        all_data = request.form
+        id = all_data.get('id')
+        patient_id = all_data.get('patient_id')
+        panel_id = all_data.get('panel_id')
+        report_type = all_data.get('report_type')
+        file_name = ""
+        if report_type == "Blood":
+            file_name = os.path.join("analysis_data",id+"_blood_results.csv")
+        elif report_type == "Allergy":
+            file_name = os.path.join("analysis_data",id+"_allergy_results.csv")
+
+        if file_name != "":
+            fw = open(os.path.join(app.config['UPLOAD_FOLDER'],file_name), "w")
+            for k, v in all_data.items():
+                if k != "csrf_token" and k != "id" and k != "patient_id" and k != 'panel_id' and k != 'report_type':
+                    print(k+"\t"+v, file= fw)
+            fw.close()
+            update_patient_panels = patients.Patient_panels.query.get((id, patient_id, panel_id))
+
+            if report_type == "Blood":
+                setattr(update_patient_panels, 'blood_results',file_name)
+            elif report_type == "Allergy":
+                setattr(update_patient_panels, 'allergy_results', file_name)
+            setattr(update_patient_panels, 'submitted_date', datetime.datetime.now())
+            db.session.commit()
+        return redirect("/analysis_view")
+    else:
+        return redirect("/bad_request")
+
 # For Ajax
 @csrf.exempt
 @app.route('/getReportFields', methods=['POST'])
@@ -54,13 +98,11 @@ def getReportFields():
         get_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
         patient_panel_schema = patients.Patient_panelsSchema()
         op = patient_panel_schema.dumps(get_patient_panels)
-        f = open(os.path.join(app.config['UPLOAD_FOLDER'],"r"
-                                                          "eport_form_fields/Blood.txt"))
-        data = f.read()
         d = json.loads(op)
-        print(type(d))
-        print(data)
-        f.close()
-        return jsonify(op) #, jsonify(data)
+        with open(os.path.join(app.config['UPLOAD_FOLDER'],"report_form_fields/"+request.form['report_type']+".txt")) as json_file:
+            data = json.load(json_file)
+            d['formData'] = data['formData']
+        #print(type(d), json.dumps(d))
+        return json.dumps(d)
     else:
         return redirect("/bad_request")

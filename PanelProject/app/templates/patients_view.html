@@ -34,8 +34,8 @@
               <div class="card-body">
                 {% include "flash_alert.html" ignore missing %}
 
-
-        <!-- SELECT2 EXAMPLE -->
+<!-- 
+        <!-- SELECT2 EXAMPLE --
         <div class="card card-default  collapsed-card">
           <div class="card-header">
             <h3 class="card-title">Filters</h3>
@@ -49,11 +49,11 @@
               </button>
             </div>
           </div>
-          <!-- /.card-header -->
+          <!-- /.card-header --
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                <!-- Date range -->
+                <!-- Date range --
                 <div class="form-group">
                   <label>Date range:</label>
 
@@ -65,20 +65,20 @@
                     </div>
                     <input type="text" class="form-control float-right" id="from_to_date_input">
                   </div>
-                  <!-- /.input group -->
+                  <!-- /.input group --
                 </div>
-                <!-- /.form group -->
+                <!-- /.form group --
               </div>
-              <!-- /.col -->
+              <!-- /.col --
               <div class="col-md-6">
-                <!-- /.form-group -->
+                <!-- /.form-group --
               </div>
-              <!-- /.col -->
+              <!-- /.col --
             </div>
-            <!-- /.row -->
+            <!-- /.row --
           </div>
         </div>
-        <!-- /.card -->
+        <!-- /.card --> 
                 <div class="table-responsive">
                   <table id="dataTable1" class="table table-bordered table-sm">
                     <thead>
@@ -184,7 +184,7 @@
       </div>
     </div>
     <div class="modal fade" id="viewPatientEmailModal" tabindex="-1" role="dialog" aria-labelledby="viewPatientEmailModalLabel" aria-hidden="true">
-      <form action="" method="post"  enctype='multipart/form-data'> <!-- sendEmail -->
+      <form action="/sendEmail" method="post"  enctype='multipart/form-data'>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -203,12 +203,17 @@
                    <textarea id="editor1" placeholder="Enter Some Message" name="message"></textarea>
                 </div>
                 <div class="form-group">
-                  <div class="btn btn-default btn-file">
-                    <i class="fas fa-paperclip"></i> Attachment
-                    <input type="file" name="attachment">
+                    <label for="exampleInputFile">File input</label>
+                    <div class="input-group">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="attachment" name="attachment" multiple>
+                        <label class="custom-file-label" for="attachment"><i class="fa fa-paperclip" id="attachment_txt"></i> </label>
+                      </div>
+                      <div class="input-group-append">
+                        <button onclick="document.getElementById('attachment_txt').innerHTML = '';document.getElementById('attachment').val = ''" class="input-group-text" type="button">Reset</button>
+                      </div>
+                    </div>
                   </div>
-                  <!-- <p class="help-block">Max. 32MB</p> -->
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

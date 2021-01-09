@@ -137,12 +137,12 @@ def getPatientById():
 @app.route('/sendEmail', methods=['POST'])
 def sendEmail():
     if "login_id" in session:
-        print(request.form)
-        print(request.files)
+
         msg = Message(request.form['subject'], sender='bioinformatics.arraygen.ak@gmail.com', recipients=[request.form['to']])
-        msg.body = request.form['message']
-        file = request.files['attachment']
-        msg.attach(secure_filename(file.filename), file.content_type, file.stream.read())
+        msg.html = request.form['message']
+        if len(request.files.getlist('attachment')) > 0:
+            for file in request.files.getlist('attachment'):
+                msg.attach(secure_filename(file.filename), file.content_type, file.read())
         mail.send(msg)
         return redirect("/patients_view")
     else:

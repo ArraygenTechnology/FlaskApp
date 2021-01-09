@@ -50,7 +50,7 @@
                             <div class="col-sm-12">
                               <div class="form-group">
                                 <div class="input-group date" id="date" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input current_date" data-target="#date" name="date"  value="{% if patient is defined %}{{ patient.date }}{% endif %}" required readonly />
+                                    <input type="text" class="form-control datetimepicker-input current_date" data-target="#date" name="date"  value="{% if patient is defined %}{{ patient.date.strftime('%m/%d/%Y') }}{% endif %}" required readonly />
                                     <div class="input-group-append" data-target="#date" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>

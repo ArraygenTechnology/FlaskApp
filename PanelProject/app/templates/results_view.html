@@ -36,9 +36,9 @@
 
 
         <!-- SELECT2 EXAMPLE -->
-        <div class="card card-default  collapsed-card">
+        <div class="card card-default {% if get_method != True %} collapsed-card {% endif %}">
           <div class="card-header">
-            <h3 class="card-title">Filters</h3>
+            <h3 class="card-title">Filters </h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -64,7 +64,7 @@
                           <i class="far fa-calendar-alt"></i>
                         </span>
                       </div>
-                      <input type="text" class="form-control float-right" id="from_to_date_input" name="from_to_date_input">
+                      <input type="text" class="form-control float-right" id="from_to_date_input" name="from_to_date_input" value="{% if from_to_date_input != "" %}{{from_to_date_input}}{% endif %}">
                     </div>
                     <!-- /.input group -->
                   </div>
