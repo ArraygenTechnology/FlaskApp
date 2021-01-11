@@ -5,6 +5,13 @@ from werkzeug.utils import secure_filename
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_marshmallow import Marshmallow
 from flask_mail import Mail, Message
+import boto3
+from botocore.exceptions import ClientError
+"""import smtplib
+sendEmailSMTP = smtplib.SMTP()
+sendEmailSMTP.connect("email-smtp.ap-south-1.amazonaws.com", 587)
+sendEmailSMTP.starttls()
+sendEmailSMTP.login("AKIA6GL7YMRN3L6WBHFX", "BENasRAL3rQ93JN2nhnmz4Jamwz20XSHz0g3t65QJtVB")"""
 
 csrf = CSRFProtect()
 

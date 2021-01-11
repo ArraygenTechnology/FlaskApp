@@ -1,0 +1,21 @@
+Go to ses in aws
+add emails and verfiy it from email
+go to smtp settings add my credentials and download all details
+now go to iam in aws
+go to users , clicker to smtp user
+change setting by clicking AmazonSesSendingAccess 
+edit policy and make it as 
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ses:SendRawEmail",
+                "ses:SendEmail"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+and generate code

@@ -137,13 +137,86 @@ def getPatientById():
 @app.route('/sendEmail', methods=['POST'])
 def sendEmail():
     if "login_id" in session:
+        # Replace sender@example.com with your "From" address.
+        # This address must be verified with Amazon SES.
+        SENDER = "Sender Name <bioinformatics.arraygen.ak@gmail.com>"
 
+        # Replace recipient@example.com with a "To" address. If your account
+        # is still in the sandbox, this address must be verified.
+        RECIPIENT = request.form['to']
+
+        # Specify a configuration set. If you do not want to use a configuration
+        # set, comment the following variable, and the
+        # ConfigurationSetName=CONFIGURATION_SET argument below.
+        CONFIGURATION_SET = "ConfigSet"
+
+        # If necessary, replace us-west-2 with the AWS Region you're using for Amazon SES.
+        AWS_REGION = "ap-south-1"
+
+        # The subject line for the email.
+        SUBJECT = request.form['subject']
+
+        # The email body for recipients with non-HTML email clients.
+        BODY_TEXT = ("")
+
+        # The HTML body of the email.
+        BODY_HTML = """<html>
+        <head></head>
+        <body>"""+ request.form['message']+"""
+        </body>
+        </html> """
+
+        # The character encoding for the email.
+        CHARSET = "UTF-8"
+
+        # Create a new SES resource and specify a region.
+        client = boto3.client('ses', aws_access_key_id='AKIA6GL7YMRN4LD7OJ4B', aws_secret_access_key='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', region_name=AWS_REGION)
+
+        # Try to send the email.
+        try:
+            # Provide the contents of the email.
+            response = client.send_email(
+                Destination={
+                    'ToAddresses': [
+                        RECIPIENT,
+                    ],
+                },
+                Message={
+                    'Body': {
+                        'Html': {
+                            'Charset': CHARSET,
+                            'Data': BODY_HTML,
+                        },
+                        'Text': {
+                            'Charset': CHARSET,
+                            'Data': BODY_TEXT,
+                        },
+                    },
+                    'Subject': {
+                        'Charset': CHARSET,
+                        'Data': SUBJECT,
+                    },
+                },
+                Source=SENDER,
+                # If you are not using a configuration set, comment or delete the
+                # following line
+                #ConfigurationSetName=CONFIGURATION_SET,
+            )
+        # Display an error if something goes wrong.
+        except ClientError as e:
+            return (e.response['Error']['Message'])
+        else:
+            print("Email sent! Message ID:"),
+            print(response['MessageId'])
+        '''
         msg = Message(request.form['subject'], sender='bioinformatics.arraygen.ak@gmail.com', recipients=[request.form['to']])
         msg.html = request.form['message']
         if len(request.files.getlist('attachment')) > 0:
             for file in request.files.getlist('attachment'):
                 msg.attach(secure_filename(file.filename), file.content_type, file.read())
         mail.send(msg)
+        '''
+        flash("Email Is Sent Successfully To"+request.form['to'])
         return redirect("/patients_view")
     else:
         return redirect("/bad_request")
