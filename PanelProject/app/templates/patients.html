@@ -335,11 +335,23 @@
                         <th class="text-right"><span class="text-danger">*</span> Height: </th>
                         <td>
                            <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-4">
                               <div class="form-group">
-                                <input type="text" class="form-control height" placeholder="Enter Height in cm" name="height"  value="{% if patient is defined %}{{ patient.height }}{% endif %}" required>
+                                <input type="text" class="form-control height" placeholder="Enter Height in Feet" name="height1"  value="{% if patient is defined %}{{ (patient.height/12)|int }}{% endif %}" required>
                               </div>
                             </div>
+                            <div class="col-sm-2">
+                              Feet
+                            </div>
+                             <div class="col-sm-3">
+                              <div class="form-group">
+                                <input type="text" class="form-control height" placeholder="Enter Height in Inches" name="height2"  value="{% if patient is defined %}{{ patient.height%12 }}{% endif %}" required>
+                              </div>
+                            </div>
+                            <div class="col-sm-3">
+                              Inches
+                            </div>
+                            <input type="text" class="form-control height" placeholder="Enter Height in Inches" name="height"  value="{% if patient is defined %}{{ patient.height }}{% endif %}" required>
                           </div>
                         </td>
                       </tr>

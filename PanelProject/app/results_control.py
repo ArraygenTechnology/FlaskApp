@@ -5,6 +5,7 @@ from .models import patients, panels
 def results_view():
     if "login_id" in session:
         from_to_date_input = ""
+        technician_status = "Approved"
         if request.args.get("from_to_date_input") != None:
             from_to_date_input = request.args.get("from_to_date_input")
             date = request.args.get("from_to_date_input").split(" - ")
@@ -12,19 +13,17 @@ def results_view():
             patients_panels_refid = db.session.query(patients.Patients, panels.Panels,
                                                      patients.Patient_panels.id).filter(
                 patients.Patient_panels.panel_id == panels.Panels.id,
-                patients.Patient_panels.patient_id == patients.Patients.id).filter(
+                patients.Patient_panels.patient_id == patients.Patients.id ,
+                patients.Patient_panels.technician_status == technician_status ).filter(
                 patients.Patients.date <= date[1]).filter(patients.Patients.date >= date[0]).order_by(patients.Patients.id).all()
 
-            print(db.session.query(patients.Patients, panels.Panels,
-                                                     patients.Patient_panels.id).filter(
-                patients.Patient_panels.panel_id == panels.Panels.id,
-                patients.Patient_panels.patient_id == patients.Patients.id).filter(
-                patients.Patients.date <= date[1]).filter(patients.Patients.date >= date[0]).order_by(patients.Patients.id))
+
             get_method = True
         else:
             patients_panels_refid = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels.id).filter(
                 patients.Patient_panels.panel_id == panels.Panels.id,
-                patients.Patient_panels.patient_id == patients.Patients.id).order_by(patients.Patients.id).all()
+                patients.Patient_panels.patient_id == patients.Patients.id,
+                patients.Patient_panels.technician_status == technician_status).order_by(patients.Patients.id).all()
             get_method = False
         return render_template('results_view.html', patients_panels_refid= patients_panels_refid, get_method = get_method , from_to_date_input = from_to_date_input )
     else:
@@ -44,3 +43,10 @@ def updatePatientPhisicianDetails():
         return redirect("/results_view")
     else:
         return redirect("/bad_request")
+
+# for pdf
+@app.route('/hello_<name>.pdf')
+def hello_pdf(name):
+    # Make a PDF straight from HTML in a string.
+    html = render_template('hello.html', name=name)
+    return html #render_pdf(HTML(string=html))

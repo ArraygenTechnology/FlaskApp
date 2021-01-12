@@ -96,7 +96,7 @@ body, .login-page{
       {% include "flash_alert.html" ignore missing %}
       <h5 class="login-box-msg">Sign in to start your session</h5>
 
-      <form action="{{ url_for('sys_user_login') }}" method="post">
+      <form action="{% if user_type == 'User' %} {{ url_for('user_login') }} {% else %}{{ url_for('sys_user_login') }} {% endif %}" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="input-group mb-3">
           <input type="email" class="form-control" placeholder="Email" name="email" required>

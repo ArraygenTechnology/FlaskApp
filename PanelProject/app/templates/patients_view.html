@@ -104,7 +104,7 @@
                         <td>{{patient_panel[1].name}} </td>
                         <td>{% if patient_panel[2].submitted_date != None %}{{patient_panel[2].submitted_date.strftime('%m/%d/%Y')}}{% endif %}</td>
                         <td>{{patient_panel[2].result_status}}</td>
-                        <td>{% if patient_panel[2].result_status == "Done" %} <a href="{{patient_panel[2].first_result}}" target="_blank">View</a> {% endif %}</td>
+                        <td>{% if patient_panel[2].result_status == "Done" %} <a href="hello_{{patient_panel[2].first_result}}.pdf" target="_blank">View</a> {% endif %}</td>
                         <td>
                         
                           {% if patient_panel[2].result_status == "Done" %}
@@ -140,8 +140,8 @@
                         <td>
                           {% if patient_panel[2].result_status == "Done" %}
                           <a href="" data-toggle="modal" data-target="#viewPatientPhysicianDetailsModal" data-id={{patient_panel[2].id}}  data-patient_id={{patient_panel[0].id}}  data-panel_id={{patient_panel[1].id}} onclick="PatientPhysicianDetails(this)"><i class="fa fa-user-md"></i></a>
-                          <a href="" data-toggle="modal" data-target="#viewPatientEmailModal" data-id={{patient_panel[0].id}} onclick="PatientEmailModal(this)" > <i class="fas fa-paper-plane" title="Send Results"></i></a>
-                          <a href=""   > <i class="fas fa-print" title="Print Results"></i></a>
+                          <a href="" data-toggle="modal" data-target="#viewPatientEmailModal" data-id={{patient_panel[0].id}} data-panel_id={{patient_panel[1].id}} data-patient_panel_id={{patient_panel[2].id}}  onclick="PatientEmailModal(this)" > <i class="fas fa-paper-plane" title="{% if patient_panel[2].send_date != None %}Last sent on {{patient_panel[2].send_date.strftime('%m/%d/%Y') }}{% else %} Not yet send {% endif %}"></i></a>
+                          <a href=""   > <i class="fas fa-print" title="{% if patient_panel[2].print_and_issue_date != None %}Last printed on {{patient_panel[2].print_and_issue_date.strftime('%m/%d/%Y') }}{% else %} Not yet printed {% endif %}"></i></a>
                           {% endif %}
                         </td>
                       </tr>
@@ -193,7 +193,10 @@
               <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-              <div class="form-group">
+                <input type="hidden" id="id" name="id">
+                <input type="hidden" id="patient_id" name="patient_id">
+                <input type="hidden" id="panel_id" name="panel_id">
+                <div class="form-group">
                   <input type="email" class="form-control" placeholder="To:" id ="toEmailModal" name="to">
                 </div>
                 <div class="form-group">
@@ -206,7 +209,7 @@
                     <label for="exampleInputFile">File input</label>
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="attachment" name="attachment" multiple>
+                        <input type="file" class="custom-file-input" id="attachment" name="attachment" multiple required>
                         <label class="custom-file-label" for="attachment"><i class="fa fa-paperclip" id="attachment_txt"></i> </label>
                       </div>
                       <div class="input-group-append">

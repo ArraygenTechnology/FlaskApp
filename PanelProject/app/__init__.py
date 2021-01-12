@@ -5,13 +5,14 @@ from werkzeug.utils import secure_filename
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_marshmallow import Marshmallow
 from flask_mail import Mail, Message
+
 import boto3
 from botocore.exceptions import ClientError
-"""import smtplib
-sendEmailSMTP = smtplib.SMTP()
-sendEmailSMTP.connect("email-smtp.ap-south-1.amazonaws.com", 587)
-sendEmailSMTP.starttls()
-sendEmailSMTP.login("AKIA6GL7YMRN3L6WBHFX", "BENasRAL3rQ93JN2nhnmz4Jamwz20XSHz0g3t65QJtVB")"""
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+
+#from flask_weasyprint import HTML, render_pdf
 
 csrf = CSRFProtect()
 
@@ -40,5 +41,5 @@ def csrf_error(reason):
     else:
         return render_template('bad_request.html', img=("dist/img/400-error.png", "dist/img/404-error-mobile.png"))
 
-from . import sys_users_control, dashboard_control, patients_control, analysis_control, results_control
+from . import sys_users_control, dashboard_control, patients_control, analysis_control, results_control, user_control
 from .models import sys_users
