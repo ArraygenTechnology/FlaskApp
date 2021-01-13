@@ -33,12 +33,12 @@ def sys_user_login():
 @app.route("/sys_user_logout")
 def sys_user_logout():
     session.pop('login_id',None)
-    session.pop('role',None)
+    user_type = session.pop('role',None)
     session.pop('l_name',None)
     session.pop('f_name',None)
     session.pop('gender',None)
     flash("Logged out successfully".title(), "info")
-    return redirect("/")
+    return redirect("/"+user_type)
 
 # Add or Update Users
 @csrf.exempt

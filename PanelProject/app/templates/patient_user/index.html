@@ -63,7 +63,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"> Welcome <small>Akshata</small></h1>
+            <h1 class="m-0"> Welcome <small>{{session.f_name}} {{session.l_name}}</small></h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -74,7 +74,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="content">
       <div class="container">
         <div class="row">
-          {% for panel in panels %}
+          {% for panel in user.panels %}
             
          
 
@@ -109,7 +109,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </a>
                 <p class="lead mb-5">
                   <br>
-                  <strong>Phone:</strong> +1 234 56789012<br>
+                  <strong>Phone:</strong> +1 123 45678910<br>
                   <strong>Email:</strong> info@scientificwellnesscenter.com<br>                  
                   <strong>Address:</strong> Xyz,asdjk asdk adhad, Pune,<br> Maharshtra, India <br>
 

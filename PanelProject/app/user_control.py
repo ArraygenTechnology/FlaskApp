@@ -4,8 +4,8 @@ from .models import patients, panels
 @app.route('/user_index')
 def user_index():
     if "login_id" in session:
-        panels_obj = panels.Panels.query.order_by(panels.Panels.id).all()
-        return render_template('patient_user/index.html', panels= panels_obj)
+        user = patients.Patients.query.get(session['login_id'])
+        return render_template('patient_user/index.html', user= user)
     else:
         return redirect("/bad_request")
 
@@ -21,7 +21,7 @@ def user_login():
             user = patients.Patients.query.filter(patients.Patients.email == email, patients.Patients.password == password).first()
             if user != None:
 
-                session['login_id'] = user.email
+                session['login_id'] = user.id
                 session['l_name'] = user.l_name
                 session['f_name'] = user.f_name
 
@@ -39,7 +39,6 @@ def user_login():
 @app.route("/user_logout")
 def user_logout():
     session.pop('login_id',None)
-    session.pop('role',None)
     session.pop('f_name',None)
     session.pop('l_name',None)
     flash("Logged out successfully".title(), "info")

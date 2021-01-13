@@ -71,7 +71,7 @@ body, .login-page{
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
-
+  {% if user_type != 'User' %} 
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav">
             
@@ -84,6 +84,7 @@ body, .login-page{
             <a href="/User" class="nav-item nav-link">User</a>
         </div>
     </div>
+   {% endif %}
 </nav>
 
 <div class="login-box login-page" style="width: 100%">
@@ -143,7 +144,7 @@ body, .login-page{
 
     <hr>
       <p class="mb-1">
-        <a href="forgot-password.html">I forgot my password</a>
+        <a  href="/" >I forgot my password</a> <!-- data-toggle="modal" data-target="#ForgotPasswordModal"  -->
       </p>
     
     </div>
@@ -152,7 +153,35 @@ body, .login-page{
   <!-- /.card -->
 </div>
 <!-- /.login-box -->
-
+<div class="modal fade" id="ForgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="ForgotPasswordLabel" aria-hidden="true">
+  <form action="/forgotPassword" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Forgot Password</h3>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="user_type" value="{{user_type}}">
+                 <div class="input-group mb-3">
+                  <input type="email" class="form-control" placeholder="Enter Your Registered Email Id" name="email" required>
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-envelope"></span>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" disable class="btn btn-primary">Submit</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                
+            </div>
+        </div>
+      </div>
+      </form>
+    </div>    
 <!-- jQuery -->
 <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
 <!-- Bootstrap 4 -->

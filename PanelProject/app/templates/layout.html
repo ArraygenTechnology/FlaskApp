@@ -327,11 +327,14 @@ $(function () {
     }
   });
 
-  $( ".weight, .height" ).change(function() {
+  $( ".weight, .height1 , .height2" ).change(function() {
     weight = parseInt($('.weight').val());
-    height = parseInt($('.height').val());
+    height1 = parseInt($('.height1').val());
+    height2 = parseInt($('.height2').val());
+    height = (height1*12)+height2
+    $('.height').val(height);
     //BMI = (   Weight in Pounds / (Height in inches) x (Height in inches)  ) x 703
-    var bmi = (weight / (height * height)) * 10000 ;
+    var bmi = (weight / (height * height)) * 703 ;
     $('.bmi').val(bmi);
   });
    $('#submit_patient').click(function() {
