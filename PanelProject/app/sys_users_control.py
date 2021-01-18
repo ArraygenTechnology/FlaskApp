@@ -1,5 +1,5 @@
 from . import *
-from .models import sys_users
+from .models import sys_users, patients, panels
 
 # Login
 @csrf.exempt
@@ -18,6 +18,12 @@ def sys_user_login():
                 session['l_name'] = user.l_name
                 session['f_name'] = user.f_name
                 session['gender'] = user.gender
+                panels_obj = panels.Panels.query.order_by(panels.Panels.id).all()
+                panel_schema = panels.PanelSchema()
+                op = [json.loads(panel_schema.dumps(panels_obj_))for panels_obj_ in panels_obj]
+                session['sidebar_panel'] = op
+
+                print(panels_obj, op, panel_schema)
 
                 flash("Logged in Successfully".title(), "info")
                 return redirect("/dashboard")
@@ -37,6 +43,7 @@ def sys_user_logout():
     session.pop('l_name',None)
     session.pop('f_name',None)
     session.pop('gender',None)
+    session.pop('sidebar_panel',None)
     flash("Logged out successfully".title(), "info")
     return redirect("/"+user_type)
 

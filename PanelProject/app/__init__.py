@@ -42,4 +42,6 @@ def csrf_error(reason):
         return render_template('bad_request.html', img=("dist/img/400-error.png", "dist/img/404-error-mobile.png"))
 
 from . import sys_users_control, dashboard_control, patients_control, analysis_control, results_control, user_control
-from .models import sys_users
+from . import panel_category_control
+
+from .models import panels, patients, sys_users
