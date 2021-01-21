@@ -698,6 +698,162 @@ function ReportFormModal(elm) {
         }
     });
   }
+
+  function traitModal(elm) {
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getTraits',
+        data: {
+            id: $(elm).attr('data-id'),
+            csrf_token: csrftoken
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+            $('#modalDescription').html(res.about);
+            $('#modalDietarySourcePlant').html(res.source_plant);
+            $('#modalDietarySourceAnimal').html(res.source_animal);
+            $('#modalDietarySourceOthers').html(res.source_others);
+            $('#modalWhatToDo').html(res.about);
+
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  function geneTableDisplay(res){
+    var html = "";
+      $.each(res, function(index, value){
+        var value = JSON.parse(value);
+        html += '<tr>';
+        html += '<td>'+value.gene+'</td>';
+        html += '<td>'+value.rs_id+'</td>';
+        html += '<td>'+value.genotype+'</td>';
+        html += '<td>'+value.score+'</td>';
+        html += '<td>'+value.allele+'</td>';
+        html += '<td><a href="#" onclick="edittraitGeneModal('+value.id+')"><i class="fas fa-edit"  aria-hidden="true"></i></a> &nbsp;\
+                     <a href="#" onclick=" deleteTraitAlgorithmInfoModal('+value.id+')" class="text-danger" onclick="return confirm(\'Are you sure you want to delete this?\');">\
+                      <i class="fa fa-trash" aria-hidden="true"></i>\
+                      </a>\
+                  </td>';              
+        html += '<tr>';
+      }); 
+      return html;
+  }
+
+  
+
+  function deleteTraitAlgorithmInfoModal(elm) {
+    var id = parseInt(elm);
+    var csrftoken = "{{ csrf_token() }}";
+    //alert(csrftoken);
+    $.ajax({
+        url: '/deleteTraitAlgorithmInfo',
+        data: {
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+          Toast.fire({
+                icon: 'success',
+                title: " Successfully Done !"
+          });
+          html = geneTableDisplay(res) ;
+          $('#TraitGreneModalTable').html(html);
+        },
+        error : function(error){
+          alert(error);
+        }
+    });
+  }
+
+  function edittraitGeneModal(elm) {
+    var id = parseInt(elm);
+    var csrftoken = "{{ csrf_token() }}";
+    //alert(csrftoken);
+    $.ajax({
+        url: '/getSingleTraitAlgorithmInfo',
+        data: {
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);   
+            $('#gene_id').val(res.id);
+            $('#gene').val(res.gene);
+            $('#rs_id').val(res.rs_id);
+            $('#genotype').val(res.genotype);
+            $('#score').val(res.score);
+            $('#allele').val(res.allele); 
+        },
+        error : function(error){
+          alert(error);
+        }
+    });
+  }
+  function traitGeneModal(elm) {
+    var id= $(elm).attr('data-trait-id');
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getTraitAlgorithmInfo',
+        data: {
+
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+            //alert(res);
+            //var res = JSON.parse(res);           
+            $('#trait_id').val(id);
+            html = geneTableDisplay(res) ;
+            $('#TraitGreneModalTable').html(html);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  $('#traitGeneDetailsForm').on('submit', function(e){
+    $.ajax({
+      data: {
+        csrf_token:$('#csrf_token').val(),
+        trait_id : $('#trait_id').val(),
+        gene_id : $('#gene_id').val(),
+        gene : $('#gene').val(),
+        rs_id : $('#rs_id').val(),
+        genotype : $('#genotype').val(),
+        score : $('#score').val(),
+        allele : $('#allele').val()
+      },
+      type: 'POST',
+      url : '/trait_gene_add_update'
+    })
+    .done(function(data1){
+      //var data1 = JSON.parse(data1);
+      Toast.fire({
+            icon: 'success',
+            title: " Successfully Done !"
+      });
+      html = geneTableDisplay(data1) ;
+      //alert(html);
+      $('#TraitGreneModalTable').html(html);
+      $('#gene_id').val("0")
+      $('#gene').val("");
+      $('#rs_id').val("");
+      $('#genotype').val("");
+      $('#score').val("");
+      $('#allele').val("");
+    })
+    e.preventDefault();
+  });
+
+  
 </script>
 
 </body>

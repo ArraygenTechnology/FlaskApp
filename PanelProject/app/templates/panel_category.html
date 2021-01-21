@@ -119,19 +119,23 @@
                   </div>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="{% if trait is defined %}/trait_add_update{{trait.id}}{% else %}/trait_add_update{% endif %}" enctype="multipart/form-data">
+                    <form method="post" action="{% if trait is defined %}/trait_add_update_{{trait.id}}{% else %}/trait_add_update{% endif %}" enctype="multipart/form-data">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />  
                         <input type="hidden" name="panel_id" value="{{panel_info.id}}">
                         <div class="col-sm-12">
                           <div class="row">
                             <div class="col-sm-3">
                               <!-- checkbox -->
+                              {% set category_name = '' %}
+                              {% if trait is defined %}
+                              {% set categry_name = trait.category_id %}
+                              {% endif %}
                                 <div class="form-group">
                                   <label> Category Name : </label>
                                   <select class="form-control" name="category_id">
                                     <option value="">-- Select Category --</option>
                                     {% for category in categories %}
-                                      <option value="{{category.id}}">{{category.name}}</option>
+                                      <option value="{{category.id}}" {% if category.id == categry_name %} selected {% endif %}>{{category.name}}</option>
                                     {% endfor %}
                                   </select>
                                     <!-- 
@@ -142,32 +146,40 @@
                               <!-- checkbox -->
                                 <div class="form-group">
                                     <label> Trait Name : </label>
-                                    <input type="text" class="form-control" placeholder="Enter Trait Name" name="name"  value="{% if category is defined %}{{ category.name }}{% endif %}" required >
+                                    <input type="text" class="form-control" placeholder="Enter Trait Name" name="name" value="{% if trait is defined %}{{ trait.name }}{% endif %}" required >
                                 </div>
                             </div>   
+                            {% if trait is defined %}
+                            <div class="col-sm-2">
+                               <img  src="{{ url_for('static', filename='uploads/'+trait.icon_img) }}" class="img-fluid">
+                            </div>
+                            {% endif %}
                             <div class="col-sm-3">
                               <!-- checkbox -->
                               <div class="form-group">
-                                <label for="exampleInputFile">Photo</label>
+                                <label for="exampleInputFile">Photo</label> 
                                 <div class="input-group">
                                   <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="exampleInputFile" accept="image/*" name="icon_img">
-                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                    <input type="file" class="custom-file-input" id="exampleInputFile" accept="image/*" name="icon_img" value="{% if trait is defined %}{{ trait.icon_img }}{% endif %}">
+                                    <label class="custom-file-label" for="exampleInputFile">Choose {% if trait is defined %} Another {% endif %} file</label>
                                   </div>
                                 </div>
                               </div>
                             </div>
-
+                            {% set source_status = '' %}
+                            {% if trait is defined %}
+                            {% set source_status = trait.source_status %}
+                            {% endif %}
                             <div class="col-sm-3">
                               <br/>
                                 <div class="form-group">
                                   <div class="form-group">
                                     <div class="custom-control custom-radio">
-                                      <input class="custom-control-input" type="radio" id="customRadio1" value="Yes" name="source_status" required="">
+                                      <input class="custom-control-input" type="radio" id="customRadio1" value="Yes" {% if source_status=='Yes' %} checked {% endif %} name="source_status" required="">
                                       <label for="customRadio1" class="custom-control-label">Include Dietary Source </label>
                                     </div>
                                     <div class="custom-control custom-radio">
-                                      <input class="custom-control-input" type="radio" id="customRadio2" name="source_status" value="No">
+                                      <input class="custom-control-input" type="radio" id="customRadio2" name="source_status"  {% if source_status=='No' %} checked {% endif %}  value="No">
                                       <label for="customRadio2" class="custom-control-label">Include What To Do</label>
                                     </div>
                                   </div>
@@ -177,7 +189,7 @@
                             <div class="col-sm-12">   
                               <div class="form-group">
                                 <label>Trait Description : </label>
-                                 <textarea id="editor2" name="about"></textarea>
+                                 <textarea id="editor2" name="about">{% if trait is defined %}{{ trait.about }}{% endif %}</textarea>
                               </div>
                             </div>
 
@@ -197,17 +209,17 @@
                                 <div class="card-body" style="display: none;">                                  
                                   <div class="form-group">
                                     <label> Plant: </label>
-                                     <textarea id="editor1" name="source_plant"></textarea>
+                                     <textarea id="editor1" name="source_plant">{% if trait is defined %}{{ trait.source_plant }}{% endif %}</textarea>
                                   </div>
 
                                   <div class="form-group">
                                     <label>Animal : </label>
-                                     <textarea id="editor3" name="source_animal"></textarea>
+                                     <textarea id="editor3" name="source_animal">{% if trait is defined %}{{ trait.source_animal }}{% endif %}</textarea>
                                   </div>
 
                                   <div class="form-group">
                                     <label>Others : </label>
-                                     <textarea id="editor4" name="source_others"></textarea>
+                                     <textarea id="editor4" name="source_others">{% if trait is defined %}{{ trait.source_others }}{% endif %}</textarea>
                                   </div>
                                 </div>
                               </div>
@@ -228,7 +240,7 @@
                                 <!-- /.card-header -->
                                 <div class="card-body" style="display: none;">        
                                   <div class="form-group">
-                                     <textarea id="editor5" name="what_to_do"></textarea>
+                                     <textarea id="editor5" name="what_to_do">{% if trait is defined %}{{ trait.what_to_do }}{% endif %}</textarea>
                                   </div>
                                 </div>
                               </div>

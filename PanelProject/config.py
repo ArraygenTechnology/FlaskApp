@@ -1,7 +1,8 @@
 import os
 class Config(object):
-    DEBUG = False
+    DEBUG = True
     TESTING = False
+    TEMPLATES_AUTO_RELOAD = True
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'guess'
     UPLOAD_FOLDER = "app/static/uploads"
     SESSION_COOKIE_SECURE = False
