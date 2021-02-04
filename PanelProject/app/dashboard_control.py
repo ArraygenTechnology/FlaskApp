@@ -4,7 +4,7 @@ from .models import patients, panels, sys_users
 @app.route('/', defaults={'user_type':'User'})
 @app.route('/<user_type>')
 def login(user_type):
-    if user_type in ['Admin', 'User', 'Technician', 'Physician']:
+    if user_type in ['User', 'Technician', 'Physician', 'Admin']:
         if "login_id" in session:
             return redirect("/dashboard")
         else:
@@ -54,7 +54,7 @@ def email_for_forgot_password(password, email, user):
     SENDER = 'bioinformatics.arraygen.ak@gmail.com'
     RECIPIENT = email
     SUBJECT = "Account Details of Scientific Wellness Center"
-    BODY_TEXT = ("")
+    BODY_TEXT = ""
     BODY_HTML = """<html>
     <head></head>
     <body>

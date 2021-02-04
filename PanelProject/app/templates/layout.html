@@ -187,9 +187,8 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-
-              {% for panel in session.sidebar_panel %}
-             {% if loop.index==1 %}
+             {% for panel in session.sidebar_panel %}
+             {% if loop.index in [1] %}
               <li class="nav-item">
                 <a href="/panel_category_{{panel.id}}" class="nav-link">
                   <i class="fas {{panel.icon}} nav-icon"></i>
@@ -639,7 +638,6 @@ function PhysiciantNoteModal(elm) {
         },
         type: 'POST',
         success: function(res) {
-
             var res = JSON.parse(res);  
             $('#id').val(res.id);
             $('#patient_id').val(res.patient.id);
@@ -670,7 +668,7 @@ function ReportFormModal(elm) {
         },
         type: 'POST',
         success: function(res) {
-
+            //alert(res);
             var res = JSON.parse(res); 
             $('#id').val(res.id);
             $('#patient_id').val(res.patient.id);
@@ -681,10 +679,11 @@ function ReportFormModal(elm) {
             var formData = "";
 
             $.each(res.formData, function(i, item) {
-                
+                formData += '<div class="col-sm-6">';
                 formData += '<div class="form-group"><label>';
                 formData += res.formData[i].name;
-                formData += '</label><input type="text" class="form-control"  name="'+res.formData[i].name+'" placeholder="'+item.name+'"> </div>';
+                formData += '</label><input type="number" class="form-control"  name="'+res.formData[i].id+'" placeholder="'+item.name+'" min = "'+item.min+'"  max = "'+item.max+'" title="Enter number between '+item.min+' to '+item.max+'"> </div>';
+                formData += '</div>';
             });
             /*
             $.each(res.formData, function (key, value) { 
@@ -853,6 +852,76 @@ function ReportFormModal(elm) {
     e.preventDefault();
   });
 
+  function bloodDetailsModal(elm) {
+    var id= $(elm).attr('data-trait-id');
+    var csrftoken = "{{ csrf_token() }}";
+    $.ajax({
+        url: '/getBloodDetails',
+        data: {
+
+            csrf_token : csrftoken,
+            id: id
+        },
+        type: 'POST',
+        success: function(res) {
+            var res = JSON.parse(res);
+
+            $('#trait_id_blood').val(id);
+            $('#blood_id').val(res.id);
+            if(res.id != 0){
+              $('#blood_min').val(res.min);
+              $('#blood_max').val(res.max);
+              $('#typical_blood_min').val(res.typical_min);
+              $('#typical_blood_max').val(res.typical_max);
+              $('#slightly_enhanced_blood_min').val(res.slightly_enhanced_min);
+              $('#slightly_enhanced_blood_max').val(res.slightly_enhanced_max);
+              $('#enhanced_blood_min').val(res.enhanced_min);
+              $('#enhanced_blood_max').val(res.enhanced_max);
+            }else{
+              $('#blood_min').val("");
+              $('#blood_max').val("");
+              $('#typical_blood_min').val("");
+              $('#typical_blood_max').val("");
+              $('#slightly_enhanced_blood_min').val("");
+              $('#slightly_enhanced_blood_max').val("");
+              $('#enhanced_blood_min').val("");
+              $('#enhanced_blood_max').val("");
+
+            }
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+  }
+
+  $('#bloodDetailsForm').on('submit', function(e){
+    $.ajax({
+      data: {
+        csrf_token:$('#csrf_token').val(),
+        trait_id : $('#trait_id_blood').val(),
+        id : $('#blood_id').val(),
+        min : $('#blood_min').val(),
+        max : $('#blood_max').val(),
+        typical_min : $('#typical_blood_min').val(),
+        typical_max : $('#typical_blood_max').val(),
+        slightly_enhanced_min : $('#slightly_enhanced_blood_min').val(),
+        slightly_enhanced_max : $('#slightly_enhanced_blood_max').val(),
+        enhanced_min : $('#enhanced_blood_min').val(),
+        enhanced_max : $('#enhanced_blood_max').val(),
+      },
+      type: 'POST',
+      url : '/blood_details_add_update'
+    })
+    .done(function(data1){
+      //var data1 = JSON.parse(data1);
+      Toast.fire({
+            icon: 'success',
+            title: " Successfully Done !"
+      });
+    })
+    e.preventDefault();
+  });
   
 </script>
 

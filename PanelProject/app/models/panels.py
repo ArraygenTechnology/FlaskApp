@@ -7,8 +7,7 @@ class Panels(db.Model):
     icon = db.Column(db.String(255),nullable =True)
     color = db.Column(db.String(20),nullable =True)
     patients = db.relationship('Patients', secondary='patient_panels')
-    category = db.relationship("Category")
-
+    category = db.relationship("Category" , cascade="all, delete-orphan")
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -16,7 +15,7 @@ class Category(db.Model):
     icon_img = db.Column(db.String(255), nullable=True)
     color = db.Column(db.String(20), nullable=True)
     panel_id = db.Column(db.Integer, db.ForeignKey('panels.id'))
-    tarits = db.relationship("Traits")
+    tarits = db.relationship("Traits" , cascade="all, delete-orphan")
 
 class Traits(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -30,7 +29,33 @@ class Traits(db.Model):
     what_to_do = db.Column(db.Text(), nullable = True)
     source_status = db.Column(db.String(20), nullable = True)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    trait_algorithm_info = db.relationship('TraitAlgorithmInfo')
+    trait_algorithm_info = db.relationship('TraitAlgorithmInfo' , cascade="all, delete-orphan" )
+    allergy_algorithm_info = db.relationship('AllergyAlgorithmInfo' , cascade="all, delete-orphan" )
+    blood_algorithm_info = db.relationship('BloodAlgorithmInfo' , cascade="all, delete-orphan" )
+
+class AllergyAlgorithmInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    min = db.Column(db.String(20), nullable=True)
+    max = db.Column(db.String(20), nullable=True)
+    typical_min = db.Column(db.String(20), nullable=True)
+    typical_max = db.Column(db.String(20), nullable=True)
+    slightly_enhanced_min = db.Column(db.String(20), nullable=True)
+    slightly_enhanced_max = db.Column(db.String(20), nullable=True)
+    enhanced_min = db.Column(db.String(20), nullable=True)
+    enhanced_max = db.Column(db.String(20), nullable=True)
+    trait_id= db.Column(db.Integer, db.ForeignKey('traits.id'))
+
+class BloodAlgorithmInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    min = db.Column(db.String(20), nullable=True)
+    max = db.Column(db.String(20), nullable=True)
+    typical_min = db.Column(db.String(20), nullable=True)
+    typical_max = db.Column(db.String(20), nullable=True)
+    slightly_enhanced_min = db.Column(db.String(20), nullable=True)
+    slightly_enhanced_max = db.Column(db.String(20), nullable=True)
+    enhanced_min = db.Column(db.String(20), nullable=True)
+    enhanced_max = db.Column(db.String(20), nullable=True)
+    trait_id = db.Column(db.Integer, db.ForeignKey('traits.id'))
 
 class TraitAlgorithmInfo(db.Model):
     id = db.Column(db.Integer, primary_key = True, nullable = False, autoincrement = True)
@@ -40,7 +65,13 @@ class TraitAlgorithmInfo(db.Model):
     score = db.Column(db.String(255), nullable = False)
     allele = db.Column(db.String(255), nullable = True)
     trait_id = db.Column(db.Integer, db.ForeignKey('traits.id'))
-    trait = db.relationship('Traits')
+
+class BloodAlgorithmInfoSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = BloodAlgorithmInfo
+        include_fk = True
+        relationship = True
+        fields = ('id', 'min', 'max', 'typical_min' , 'typical_max' , 'slightly_enhanced_min', 'slightly_enhanced_max', 'enhanced_min' , 'enhanced_max' , 'trait_id')
 
 class TraitAlgorithmInfoSchema(ma.SQLAlchemySchema):
     class Meta:

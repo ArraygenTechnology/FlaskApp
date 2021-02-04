@@ -1,8 +1,28 @@
 {
 	"formData":[
-		{"name" : "abcd"},
- 		{"name" : "mnop"},
- 		{"name" : "ab"},
- 		{"name" : "cd"}
+		{"name" : "Elevated Blood Sugar", "min" : 90, "max" :900},
+ 		{"name" : "HDL Cholesterol", "min" : 90, "max" :900},
+ 		{"name" : "LDL Cholesterol", "min" : 90, "max" :900},
+ 		{"name" : "Triglycerides", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin A", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B1", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B2", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B3", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B5", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B6", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B7", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B9", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin B12", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin C", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin D", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin E", "min" : 90, "max" :900},
+ 		{"name" : "Vitamin K", "min" : 90, "max" :900},
+ 		{"name" : "Lutein And Zeaxanthin Deficiency", "min" : 90, "max" :900},
+ 		{"name" : "Lycopene Deficiency", "min" : 90, "max" :900},
+ 		{"name" : "Coenzyme Q10 Deficiency", "min" : 90, "max" :900},
+ 		{"name" : "Calcium", "min" : 90, "max" :900},
+ 		{"name" : "Iron", "min" : 90, "max" :900},
+ 		{"name" : "Sodium", "min" : 90, "max" :900},
+ 		{"name" : "Choline", "min" : 90, "max" :900}
 	]
 }

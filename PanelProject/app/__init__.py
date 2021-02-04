@@ -1,11 +1,11 @@
-from flask import Flask, render_template, redirect, request, flash, session,jsonify, url_for, send_from_directory
+from flask import Flask, render_template, redirect, request, make_response, flash, session,jsonify, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import json, os, datetime
 from werkzeug.utils import secure_filename
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_marshmallow import Marshmallow
 from flask_mail import Mail, Message
-
+import pdfkit
 import boto3
 from botocore.exceptions import ClientError
 from email.mime.multipart import MIMEMultipart

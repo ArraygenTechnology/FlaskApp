@@ -63,7 +63,7 @@ def patients_add_update(id):
             elif exists.id == id:
                 pass
             else:
-                flash("Email id not updated becuase it's email already exists".title(), "warning")
+                flash("Email id not updated because it's email already exists".title(), "warning")
             db.session.commit()
             flash("Patient Information Updated Successfully".title(), "info")
         else:

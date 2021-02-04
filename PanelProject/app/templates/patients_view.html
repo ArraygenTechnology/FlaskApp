@@ -104,7 +104,7 @@
                         <td>{{patient_panel[1].name}} </td>
                         <td>{% if patient_panel[2].submitted_date != None %}{{patient_panel[2].submitted_date.strftime('%m/%d/%Y')}}{% endif %}</td>
                         <td>{{patient_panel[2].result_status}}</td>
-                        <td>{% if patient_panel[2].result_status == "Done" %} <a href="hello_{{patient_panel[2].first_result}}.pdf" target="_blank">View</a> {% endif %}</td>
+                        <td>{% if patient_panel[2].result_status == "Done" %} <a href="download_analysis_data/{{patient_panel[2].first_result}}" target="_blank">View</a> {% endif %}</td>
                         <td>
                         
                           {% if patient_panel[2].result_status == "Done" %}

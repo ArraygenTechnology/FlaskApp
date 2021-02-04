@@ -61,10 +61,10 @@ def category_delete(panel_id, id):
     else:
         return redirect("/bad_request")
 
-@app.route('/view_traits')
-def view_traits():
+@app.route('/view_traits_<panel_id>')
+def view_traits(panel_id):
     if "login_id" in session:
-        traits = db.session.query (panels.Traits, panels.Category).filter(panels.Traits.category_id == panels.Category.id) #panels.Traits.query.all()
+        traits = db.session.query (panels.Traits, panels.Category).filter(panels.Category.panel_id == panel_id,panels.Traits.category_id == panels.Category.id) #panels.Traits.query.all()
         #print(traits)
         traits = traits.all()
         #print(traits)
@@ -131,8 +131,8 @@ def trait_add_update(id):
     else:
         return redirect("/bad_request")
 
-@app.route('/trait_delete/<id>')
-def trait_delete(id):
+@app.route('/trait_delete/<panel_id>-<id>')
+def trait_delete(panel_id,id):
     if "login_id" in session:
         delete_trait = panels.Traits.query.get(id)
         if delete_trait.icon_img != None:
@@ -141,7 +141,7 @@ def trait_delete(id):
         db.session.delete(delete_trait)
         db.session.commit()
         flash("Trait Deleted Successfully".title(), "info")
-        return redirect('/view_traits')
+        return redirect('/view_traits_'+str(panel_id))
     else:
         return redirect("/bad_request")
 
@@ -233,5 +233,52 @@ def deleteTraitAlgorithmInfo():
 
         op = getDBTraitAlgorithmInfo(trait_id)
         return jsonify(op)
+    else:
+        return redirect("/bad_request")
+
+
+# To add or update (BloodAlgorithmInfo)
+@csrf.exempt
+@app.route('/blood_details_add_update', methods=['POST'])
+def blood_details_add_update():
+    if request.method == 'POST':
+        data = request.form
+        print(data)
+
+        all_data = data.to_dict()
+        id = all_data['id']
+        del all_data['csrf_token']
+        del all_data['id']
+        # update patient information
+
+        res = ""
+        if int(id) != 0:
+            bloodAlgorithmInfo = panels.BloodAlgorithmInfo.query.get(id)
+            for attr_name, new_value in all_data.items():
+                setattr(bloodAlgorithmInfo, attr_name, new_value)
+            db.session.commit()
+        else:
+            blood = panels.BloodAlgorithmInfo(**all_data)
+            db.session.add(blood)
+            db.session.commit()
+
+        op = getDBTraitAlgorithmInfo(all_data['trait_id'])
+        return jsonify(op)
+    else:
+        return redirect("/bad_request")
+
+
+@csrf.exempt
+@app.route('/getBloodDetails', methods=['POST'])
+def getBloodDetails():
+    if "login_id" in session:
+        blood_data = panels.BloodAlgorithmInfo.query.filter(panels.BloodAlgorithmInfo.trait_id==request.form['id']).all()
+        if len(blood_data) == 0:
+            res = '{"id":0}'
+        else:
+            bloodAlgorithmInfoSchema = panels.BloodAlgorithmInfoSchema()
+            res = bloodAlgorithmInfoSchema.dumps(blood_data[0])
+        #print(type(res))
+        return jsonify(res)
     else:
         return redirect("/bad_request")

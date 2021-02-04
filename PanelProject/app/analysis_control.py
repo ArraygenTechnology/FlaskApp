@@ -15,11 +15,60 @@ def analysis_view():
             ( (patients.Patient_panels.technician_status  == None) | (patients.Patient_panels.technician_status != technician_status))
         ).order_by(patients.Patients.id).all()
 
+
         return render_template('analysis.html',
                                patients_panels_refid_not_rejected = patients_panels_refid_not_rejected,
                                patients_panels_refid_rejected = patients_panels_refid_rejected)
     else:
         return redirect("/bad_request")
+
+def pdf_genration_genetics(user, user_algo , start_name):
+    os_path = os.getcwd()
+    categories = panels.Category.query.filter(panels.Category.panel_id == user_algo.panel_id).order_by(
+        panels.Category.id.asc()).all()
+    all_traits = [panels.Traits.query.filter(panels.Traits.category_id == category.id).all() for category in
+                  categories]
+    f = open(os.path.join(app.config['UPLOAD_FOLDER'], user_algo.dna_results))
+    user_rs_id_dict = {}
+    for line in f:
+        splitted = line.strip().split("\t")
+        user_rs_id_dict[splitted[0]] = splitted[-1]
+    algorithm_info = []
+    for traits in all_traits:
+        for trait in traits:
+            algo_list = []
+            algo = panels.TraitAlgorithmInfo.query.filter(panels.TraitAlgorithmInfo.trait_id == trait.id).all()
+            for data in algo:
+                if data.rs_id in user_rs_id_dict.keys():
+                    user_genotype = user_rs_id_dict[data.rs_id]
+                    if user_genotype == data.genotype:
+                        algo_list.append(data)
+            algorithm_info.append(algo_list)
+
+    f = open(os.path.join(app.config['UPLOAD_FOLDER'], user_algo.blood_results))
+    blood_dict = {}
+    for line in f:
+        splitted = line.strip().split("\t")
+        blood_data = panels.BloodAlgorithmInfo.query.filter(panels.BloodAlgorithmInfo.trait_id == splitted[0]).all()
+        blood_data = blood_data[0]
+        if blood_data.typical_min.isnumeric() and blood_data.typical_max.isnumeric() and blood_data.slightly_enhanced_min.isnumeric() and blood_data.slightly_enhanced_max.isnumeric() and blood_data.enhanced_min.isnumeric() and blood_data.enhanced_max.isnumeric():
+            blood_dict[int(splitted[0])] = (int(splitted[1]), (
+                int(blood_data.typical_min), int(blood_data.typical_max), int(blood_data.slightly_enhanced_min),
+                int(blood_data.slightly_enhanced_max), int(blood_data.enhanced_min), int(blood_data.enhanced_max)))
+    f.close()
+    html = render_template('genetics_pdf.html', blood_data = blood_dict, os_path=os_path, categories=categories,
+                           all_traits=all_traits, algorithm_info=algorithm_info, user=user, patient_panel=user_algo)
+    options = {
+        'page-size': 'A4',
+        'margin-top': '0in',
+        'margin-right': '0in',
+        'margin-bottom': '0in',
+        'margin-left': '0in',
+        'encoding': "UTF-8",
+        'no-outline': None
+    }
+    pdf = pdfkit.from_string(html, os.path.join(app.config['UPLOAD_FOLDER'], "analysis_data",
+                                                start_name+user.f_name + user.l_name + ".pdf"), options=options)
 
 @csrf.exempt
 @app.route('/submit_analysis_data', methods = ['POST'])
@@ -33,12 +82,31 @@ def submit_analysis_data():
                 if file and allowed_file(file.filename):
                     last_index = len(file.filename) - 1 - file.filename[::-1].index('.')
                     filename = os.path.join("analysis_data", secure_filename(ref_id+"_"+name+file.filename[last_index:]))
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+                    # filtering ata depends on rsid of panel starts here
+                    if name == "dna_results":
+                        rs_ids = {data.rs_id.lower() for data in panels.TraitAlgorithmInfo.query.all()}
+                        file1 = [line.strip().split("\t") for line in file.read().decode("utf-8").split("\n") if not line.startswith("#") and len(line.strip().split("\t"))>3 and line.strip().split("\t")[0].lower() in rs_ids]
+                        file1.insert(0,['rs_id',"chromosome","position","genotype"])
+                        f= open(os.path.join(app.config['UPLOAD_FOLDER'],filename), "w")
+                        for line in file1:
+                            print("\t".join(line), file=f)
+                        f.close()
+                    else:
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+                    # filtering ata depends on rsid of panel ends here
                     setattr(update_patient_panels, name , filename)
             setattr(update_patient_panels, 'submitted_date' , datetime.datetime.now())
-            setattr(update_patient_panels, 'first_result', 'bad_request.html')
             setattr(update_patient_panels, 'result_status', 'Done')
             db.session.commit()
+            # PDF Generation
+
+            user = patients.Patients.query.get(request.form['patient_id'])
+            user_algo = patients.Patient_panels.query.get(
+                (int(ref_id), request.form['patient_id'], request.form['panel_id']))
+            pdf_genration_genetics(user, user_algo,"1_")
+            setattr(user_algo, 'first_result', os.path.join("analysis_data","1_"+user.f_name+user.l_name+".pdf"))
+            db.session.commit()
+
             flash("Files Uploaded Successfully", "info")
         return redirect("/analysis_view")
     else:
@@ -99,10 +167,28 @@ def getReportFields():
         patient_panel_schema = patients.Patient_panelsSchema()
         op = patient_panel_schema.dumps(get_patient_panels)
         d = json.loads(op)
+        if (request.form['report_type']=="Blood"):
+            traits = db.session.query(panels.Traits , panels.BloodAlgorithmInfo).filter(panels.BloodAlgorithmInfo.trait_id == panels.Traits.id ).all()
+        else:
+            traits = db.session.query(panels.Traits, panels.AllergyAlgorithmInfo).filter(
+                panels.AllergyAlgorithmInfo.trait_id == panels.Traits.id).all()
+        report_list = []
+        for traits , report in traits:
+            data_dict = {}
+            data_dict["id"] = traits.id
+            data_dict["name"] = traits.name
+            data_dict["min"] = report.min
+            data_dict["max"] = report.max
+            report_list.append(data_dict)
+        d['formData'] = report_list
+
+        """
         with open(os.path.join(app.config['UPLOAD_FOLDER'],"report_form_fields/"+request.form['report_type']+".txt")) as json_file:
             data = json.load(json_file)
+            print(data)
             d['formData'] = data['formData']
-        #print(type(d), json.dumps(d))
+            """
+        #print(type(d),d)
         return json.dumps(d)
     else:
         return redirect("/bad_request")
