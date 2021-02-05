@@ -5,7 +5,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Analysis</h1>
+            <h1 class="m-0">Analysis <a href="/" style="style:inline-block" class="btn btn-sm btn-warning">Blood Report Format</a> </h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -75,7 +75,7 @@
                           </td>
                           <td>
                             <label for="blood_result{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="blood_result_name{{counter}}"></small></label>
-                            <input type="file" name="blood_result" id="blood_result{{counter}}" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel , .xlsx , .xls, .txt" name="dna_result{{counter}}"  hidden onchange="blood_resultFunc(this, {{counter}});" />        
+                            <input type="file" name="blood_result" id="blood_result{{counter}}" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel , .xlsx , .xls, .txt"  hidden onchange="blood_resultFunc(this, {{counter}});" />
                             / 
                               <a  data-toggle="modal" data-target="#ReportFormModal"  data-id="{{patient_panel[2].id}}"  data-patient_id="{{patient_panel[0].id}}"  data-panel_id="{{patient_panel[1].id}}" data-report="Blood" onclick="ReportFormModal(this)" target="_balnk"><label class="btn btn-xs btn-warning"><i class="fa fa-plus-square" aria-hidden="true"></i></label>
                               </a>                   
@@ -90,8 +90,8 @@
                             
                           </td>
                           <td>
-                            <label for="allergy_result{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="allergy_result_name{{counter}}"></small></label>
-                            <input type="file" name="allergy_result" id="allergy_result{{counter}}"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx , .xls , .txt" name="dna_result{{counter}}" hidden onchange="allergy_resultFunc(this, {{counter}} );"  />
+                            <label for="allergy_result_r{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="allergy_result_name_r{{counter}}"></small></label>
+                            <input type="file" name="allergy_result" id="allergy_result_r{{counter}}"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx , .xls , .txt"  hidden onchange="allergy_resultFunc(this, {{counter}} );"  />
                              / 
                               <a  data-toggle="modal" data-target="#ReportFormModal"  data-id="{{patient_panel[2].id}}"  data-patient_id="{{patient_panel[0].id}}"  data-panel_id="{{patient_panel[1].id}}" data-report="Allergy"  onclick="ReportFormModal(this)" target="_balnk"><label class="btn btn-xs btn-warning"><i class="fa fa-plus-square" aria-hidden="true"></i></label>
                               </a>  
@@ -155,8 +155,8 @@
                             <input type="hidden" name="ref_id" value="{{patient_panel[2].id}}">
                             <input type="hidden" name="patient_id" value="{{patient_panel[0].id}}">
                             <input type="hidden" name="panel_id" value="{{patient_panel[1].id}}">
-                            <label for="dna_result{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="dna_result_name{{counter}}"></small></label>
-                            <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx , .xls , .txt" name="dna_result" id="dna_result{{counter}}" onchange="dna_resultFunc(this, {{counter}});"  hidden />
+                            <label for="dna_result_r{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="dna_result_name_r{{counter}}"></small></label>
+                            <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx , .xls , .txt" name="dna_result" id="dna_result_r{{counter}}" onchange="dna_result_rFunc(this, {{counter}});"  hidden />
                             &nbsp; 
                             {% set dna_results= patient_panel[2].dna_results|string %}
                             {% if dna_results != 'None' %}
@@ -167,8 +167,8 @@
                             {% endif %}
                           </td>
                           <td>
-                            <label for="blood_result{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="blood_result_name{{counter}}"></small></label>
-                            <input type="file" name="blood_result" id="blood_result{{counter}}" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel , .xlsx , .xls, .txt" name="dna_result{{counter}}"  hidden onchange="blood_resultFunc(this, {{counter}});" />        
+                            <label for="blood_result_r{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="blood_result_name_r{{counter}}"></small></label>
+                            <input type="file" name="blood_result" id="blood_result_r{{counter}}" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel , .xlsx , .xls, .txt"   hidden onchange="blood_result_rFunc(this, {{counter}});" />
                             / 
                               <a  data-toggle="modal" data-target="#ReportFormModal"  data-id="{{patient_panel[2].id}}"  data-patient_id="{{patient_panel[0].id}}"  data-panel_id="{{patient_panel[1].id}}" data-report="Blood" onclick="ReportFormModal(this)" target="_balnk"><label class="btn btn-xs btn-warning"><i class="fa fa-plus-square" aria-hidden="true"></i></label>
                               </a>                   
@@ -184,7 +184,7 @@
                           </td>
                           <td>
                             <label for="allergy_result{{counter}}" class="btn btn-xs btn-warning"><i class="fa fa-upload" aria-hidden="true"></i> <small id ="allergy_result_name{{counter}}"></small></label>
-                            <input type="file" name="allergy_result" id="allergy_result{{counter}}"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx , .xls , .txt" name="dna_result{{counter}}" hidden onchange="allergy_resultFunc(this, {{counter}} );"  />
+                            <input type="file" name="allergy_result" id="allergy_result{{counter}}"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx , .xls , .txt" name="dna_result{{counter}}" hidden onchange="allergy_result_rFunc(this, {{counter}} );"  />
                              /
                               <a  data-toggle="modal" data-target="#ReportFormModal"  data-id="{{patient_panel[2].id}}"  data-patient_id="{{patient_panel[0].id}}"  data-panel_id="{{patient_panel[1].id}}" data-report="Allergy"  onclick="ReportFormModal(this)" target="_balnk"><label class="btn btn-xs btn-warning"><i class="fa fa-plus-square" aria-hidden="true"></i></label>
                               </a>  

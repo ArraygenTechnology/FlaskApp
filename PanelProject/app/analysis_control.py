@@ -28,47 +28,51 @@ def pdf_genration_genetics(user, user_algo , start_name):
         panels.Category.id.asc()).all()
     all_traits = [panels.Traits.query.filter(panels.Traits.category_id == category.id).all() for category in
                   categories]
-    f = open(os.path.join(app.config['UPLOAD_FOLDER'], user_algo.dna_results))
-    user_rs_id_dict = {}
-    for line in f:
-        splitted = line.strip().split("\t")
-        user_rs_id_dict[splitted[0]] = splitted[-1]
-    algorithm_info = []
-    for traits in all_traits:
-        for trait in traits:
-            algo_list = []
-            algo = panels.TraitAlgorithmInfo.query.filter(panels.TraitAlgorithmInfo.trait_id == trait.id).all()
-            for data in algo:
-                if data.rs_id in user_rs_id_dict.keys():
-                    user_genotype = user_rs_id_dict[data.rs_id]
-                    if user_genotype == data.genotype:
-                        algo_list.append(data)
-            algorithm_info.append(algo_list)
-
-    f = open(os.path.join(app.config['UPLOAD_FOLDER'], user_algo.blood_results))
-    blood_dict = {}
-    for line in f:
-        splitted = line.strip().split("\t")
-        blood_data = panels.BloodAlgorithmInfo.query.filter(panels.BloodAlgorithmInfo.trait_id == splitted[0]).all()
-        blood_data = blood_data[0]
-        if blood_data.typical_min.isnumeric() and blood_data.typical_max.isnumeric() and blood_data.slightly_enhanced_min.isnumeric() and blood_data.slightly_enhanced_max.isnumeric() and blood_data.enhanced_min.isnumeric() and blood_data.enhanced_max.isnumeric():
-            blood_dict[int(splitted[0])] = (int(splitted[1]), (
-                int(blood_data.typical_min), int(blood_data.typical_max), int(blood_data.slightly_enhanced_min),
-                int(blood_data.slightly_enhanced_max), int(blood_data.enhanced_min), int(blood_data.enhanced_max)))
-    f.close()
-    html = render_template('genetics_pdf.html', blood_data = blood_dict, os_path=os_path, categories=categories,
-                           all_traits=all_traits, algorithm_info=algorithm_info, user=user, patient_panel=user_algo)
-    options = {
-        'page-size': 'A4',
-        'margin-top': '0in',
-        'margin-right': '0in',
-        'margin-bottom': '0in',
-        'margin-left': '0in',
-        'encoding': "UTF-8",
-        'no-outline': None
-    }
-    pdf = pdfkit.from_string(html, os.path.join(app.config['UPLOAD_FOLDER'], "analysis_data",
-                                                start_name+user.f_name + user.l_name + ".pdf"), options=options)
+    if  user_algo.dna_results != None:
+        f = open(os.path.join(app.config['UPLOAD_FOLDER'], user_algo.dna_results))
+        user_rs_id_dict = {}
+        for line in f:
+            splitted = line.strip().split("\t")
+            user_rs_id_dict[splitted[0]] = splitted[-1]
+        algorithm_info = []
+        for traits in all_traits:
+            for trait in traits:
+                algo_list = []
+                algo = panels.TraitAlgorithmInfo.query.filter(panels.TraitAlgorithmInfo.trait_id == trait.id).all()
+                for data in algo:
+                    if data.rs_id in user_rs_id_dict.keys():
+                        user_genotype = user_rs_id_dict[data.rs_id]
+                        if user_genotype == data.genotype:
+                            algo_list.append(data)
+                algorithm_info.append(algo_list)
+        blood_dict = {}
+        if user_algo.blood_results != None:
+            f = open(os.path.join(app.config['UPLOAD_FOLDER'], user_algo.blood_results))
+            for line in f:
+                splitted = line.strip().split("\t")
+                blood_data = panels.BloodAlgorithmInfo.query.filter(panels.BloodAlgorithmInfo.trait_id == splitted[0]).all()
+                if len(blood_data) > 0:
+                    blood_data = blood_data[0]
+                    if blood_data.typical_min.isnumeric() and blood_data.typical_max.isnumeric() and blood_data.slightly_enhanced_min.isnumeric() and blood_data.slightly_enhanced_max.isnumeric() and blood_data.enhanced_min.isnumeric() and blood_data.enhanced_max.isnumeric():
+                        blood_dict[int(splitted[0])] = (int(splitted[1]), (
+                            int(blood_data.typical_min), int(blood_data.typical_max), int(blood_data.slightly_enhanced_min),
+                            int(blood_data.slightly_enhanced_max), int(blood_data.enhanced_min), int(blood_data.enhanced_max)))
+                    else:
+                        break
+            f.close()
+        html = render_template('genetics_pdf.html', blood_data = blood_dict, os_path=os_path, categories=categories,
+                               all_traits=all_traits, algorithm_info=algorithm_info, user=user, patient_panel=user_algo)
+        options = {
+            'page-size': 'A4',
+            'margin-top': '0in',
+            'margin-right': '0in',
+            'margin-bottom': '0in',
+            'margin-left': '0in',
+            'encoding': "UTF-8",
+            'no-outline': None
+        }
+        pdf = pdfkit.from_string(html, os.path.join(app.config['UPLOAD_FOLDER'], "analysis_data",
+                                                    start_name+user.f_name + user.l_name + ".pdf"), options=options)
 
 @csrf.exempt
 @app.route('/submit_analysis_data', methods = ['POST'])
@@ -77,12 +81,15 @@ def submit_analysis_data():
         if request.form.get("analysis_result",None) != None:
             ref_id = request.form['ref_id']
             update_patient_panels = patients.Patient_panels.query.get((int(ref_id), request.form['patient_id'], request.form['panel_id']))# patients.Patient_panels.query.get(int(ref_id))
+
             files_dict = {'dna_results': request.files['dna_result'] , 'blood_results':request.files['blood_result'], 'allergy_results':request.files['allergy_result']}
+            flag = 0
             for name, file in files_dict.items():
                 if file and allowed_file(file.filename):
                     last_index = len(file.filename) - 1 - file.filename[::-1].index('.')
                     filename = os.path.join("analysis_data", secure_filename(ref_id+"_"+name+file.filename[last_index:]))
                     # filtering ata depends on rsid of panel starts here
+
                     if name == "dna_results":
                         rs_ids = {data.rs_id.lower() for data in panels.TraitAlgorithmInfo.query.all()}
                         file1 = [line.strip().split("\t") for line in file.read().decode("utf-8").split("\n") if not line.startswith("#") and len(line.strip().split("\t"))>3 and line.strip().split("\t")[0].lower() in rs_ids]
@@ -91,23 +98,43 @@ def submit_analysis_data():
                         for line in file1:
                             print("\t".join(line), file=f)
                         f.close()
+                        setattr(update_patient_panels, name, filename)
+                    elif name == "blood_results":
+                        file1 = file.read().decode("utf-8")
+                        print(file1.strip().split("\n")[0].split("\t"))
+                        if len(file1.strip().split("\n")[0].split("\t")) > 1:
+                            f = open(os.path.join(app.config['UPLOAD_FOLDER'],filename), "w")
+                            print(file1, file=f)
+                            f.close()
+                            setattr(update_patient_panels, name, filename)
+                        else:
+                            flag = 1
                     else:
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+                        setattr(update_patient_panels, name, filename)
                     # filtering ata depends on rsid of panel ends here
-                    setattr(update_patient_panels, name , filename)
+
             setattr(update_patient_panels, 'submitted_date' , datetime.datetime.now())
             setattr(update_patient_panels, 'result_status', 'Done')
+            setattr(update_patient_panels, 'technician_status', '')
             db.session.commit()
             # PDF Generation
 
             user = patients.Patients.query.get(request.form['patient_id'])
             user_algo = patients.Patient_panels.query.get(
                 (int(ref_id), request.form['patient_id'], request.form['panel_id']))
-            pdf_genration_genetics(user, user_algo,"1_")
-            setattr(user_algo, 'first_result', os.path.join("analysis_data","1_"+user.f_name+user.l_name+".pdf"))
-            db.session.commit()
 
-            flash("Files Uploaded Successfully", "info")
+            print(user_algo.dna_results)
+            if user_algo.dna_results != None:
+                pdf_genration_genetics(user, user_algo,"1_")
+                setattr(user_algo, 'first_result', os.path.join("analysis_data","1_"+user.f_name+user.l_name+".pdf"))
+                db.session.commit()
+                if flag == 1:
+                    flash("Please check format of file before upload".title(), "error")
+                else:
+                    flash("Files Uploaded Successfully and Report is generated".title(), "info")
+            else:
+                flash("Files Uploaded Successfully and Report is not generated".title(), "info")
         return redirect("/analysis_view")
     else:
         return redirect("/bad_request")
@@ -120,8 +147,37 @@ def download_analysis_data(filename):
 @app.route('/delete_analysis_data_file/<int:id>-<int:patient_id>-<int:panel_id>-<name>')
 def delete_analysis_data_file(id, patient_id, panel_id, name):
     update_patient_panels = patients.Patient_panels.query.get((id, patient_id, panel_id))
-    os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'], getattr(update_patient_panels,name)))
+    if os.path.exists(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],
+                                   getattr(update_patient_panels,name))):
+        os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],
+                               getattr(update_patient_panels,name)))
+
+
     setattr(update_patient_panels , name, None)
+    if name == "dna_results":
+
+        if getattr(update_patient_panels, "first_result") != None:
+            if os.path.exists(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],
+                                           getattr(update_patient_panels, "first_result"))):
+                os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],
+                                       getattr(update_patient_panels, "first_result")))
+        if getattr(update_patient_panels, "second_result") != None:
+            if os.path.exists(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],
+                                           getattr(update_patient_panels, "second_result"))):
+                os.remove(os.path.join("/".join(app.root_path.split("/")[:-1]), app.config['UPLOAD_FOLDER'],
+                                       getattr(update_patient_panels, "second_result")))
+
+        setattr(update_patient_panels, "first_result", None)
+        setattr(update_patient_panels, "second_result", None)
+        setattr(update_patient_panels, "second_result", None)
+        setattr(update_patient_panels, "second_result", None)
+        setattr(update_patient_panels, "submitted_date", None)
+        setattr(update_patient_panels, "technician_status_date", None)
+        setattr(update_patient_panels, "physician_status_date", None)
+        setattr(update_patient_panels, "physician_note", None)
+        setattr(update_patient_panels, "result_status", "Pending")
+        setattr(update_patient_panels, "technician_status", "Pending")
+        setattr(update_patient_panels, "physician_status", None)
     db.session.commit()
     return redirect("/analysis_view")
 
@@ -154,6 +210,8 @@ def submitReport():
                 setattr(update_patient_panels, 'allergy_results', file_name)
             setattr(update_patient_panels, 'submitted_date', datetime.datetime.now())
             db.session.commit()
+
+
         return redirect("/analysis_view")
     else:
         return redirect("/bad_request")

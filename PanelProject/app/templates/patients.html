@@ -336,7 +336,7 @@
                            <div class="row">
                             <div class="col-sm-4">
                               <div class="form-group">
-                                <input type="text" class="form-control height1" placeholder="Enter Height in Feet" name="height1"  value="{% if patient is defined %}{{ (patient.height/12)|int }}{% endif %}" required>
+                                <input type="text" class="form-control height1" placeholder="Enter Height in Feet"  value="{% if patient is defined %}{{ (patient.height/12)|int }}{% endif %}" required>
                               </div>
                             </div>
                             <div class="col-sm-2">
@@ -344,7 +344,7 @@
                             </div>
                              <div class="col-sm-3">
                               <div class="form-group">
-                                <input type="text" class="form-control height2" placeholder="Enter Height in Inches" name="height2"  value="{% if patient is defined %}{{ patient.height%12 }}{% endif %}" required>
+                                <input type="text" class="form-control height2" placeholder="Enter Height in Inches"   value="{% if patient is defined %}{{ patient.height%12 }}{% endif %}" required>
                               </div>
                             </div>
                             <div class="col-sm-3">

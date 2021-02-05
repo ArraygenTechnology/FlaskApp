@@ -141,7 +141,7 @@
                           {% if patient_panel[2].result_status == "Done" %}
                           <a href="" data-toggle="modal" data-target="#viewPatientPhysicianDetailsModal" data-id={{patient_panel[2].id}}  data-patient_id={{patient_panel[0].id}}  data-panel_id={{patient_panel[1].id}} onclick="PatientPhysicianDetails(this)"><i class="fa fa-user-md"></i></a>
                           <a href="" data-toggle="modal" data-target="#viewPatientEmailModal" data-id={{patient_panel[0].id}} data-panel_id={{patient_panel[1].id}} data-patient_panel_id={{patient_panel[2].id}}  onclick="PatientEmailModal(this)" > <i class="fas fa-paper-plane" title="{% if patient_panel[2].send_date != None %}Last sent on {{patient_panel[2].send_date.strftime('%m/%d/%Y') }}{% else %} Not yet send {% endif %}"></i></a>
-                          <a href=""   > <i class="fas fa-print" title="{% if patient_panel[2].print_and_issue_date != None %}Last printed on {{patient_panel[2].print_and_issue_date.strftime('%m/%d/%Y') }}{% else %} Not yet printed {% endif %}"></i></a>
+                          <!--<a href=""   > <i class="fas fa-print" title="{% if patient_panel[2].print_and_issue_date != None %}Last printed on {{patient_panel[2].print_and_issue_date.strftime('%m/%d/%Y') }}{% else %} Not yet printed {% endif %}"></i></a>-->
                           {% endif %}
                         </td>
                       </tr>
@@ -238,6 +238,7 @@
               <b>Physician Status : </b> <span id="modalPhysicianStatus"></span><br/>
               <b>Date : </b> <span id="modalPhysicianStatusDate"></span><br/>
               <b>Physician Note : </b> <span id="modalPhysicianNote"></span><br/>
+              <b>New Report : </b> <span id="modalPhysicianReport"></span><br/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

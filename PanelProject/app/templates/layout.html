@@ -422,6 +422,40 @@ $(function () {
         }
     }
 
+
+    function dna_result_rFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name;
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt")) ){
+          $("#dna_result_name_r"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');
+        }else{
+          $("#dna_result_r"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of dna result");
+        }
+    }
+
+    function blood_result_rFunc(e,i){
+        //alert(i);
+        var name = e.files[0].name;
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
+          $("#blood_result_name_r"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');
+        }else{
+          $("#blood_result_r"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of blood result");
+          //$("#blood_result_name"+i).text("This file is not allowed to submit");
+        }
+    }
+
+    function allergy_result_rFunc(e,i){
+        var name = e.files[0].name;
+        if ((name.endsWith(".csv")) || (name.endsWith(".xlsx")) || (name.endsWith(".xls")) || (name.endsWith(".txt"))){
+          $("#allergy_result_name_r"+i).html('<i class="fa fa-check text-success"  aria-hidden="true"></i>');
+        }else{
+          $("#allergy_result_r"+i).val("");
+          alert("This file is not allowed to submit.. Please reselect another file of allergy result");
+          //$("#allergy_result_name"+i).text("This file is not allowed to submit");
+        }
+    }
 </script>
 <!-- Users Modules Address display in modal -->
 <script type="text/javascript">
@@ -617,7 +651,12 @@ function PatientPhysicianDetails(elm) {
             }else{
               $('#modalPhysicianStatusDate').html(convertDate(res.physician_status_date));
             }
-            
+
+            if (res.second_result == null){
+              $('#modalPhysicianReport').html("Not Yet Updated");
+            }else{
+              $('#modalPhysicianReport').html("<a target='_blank' href='download_analysis_data/"+res.second_result+"'> view </a>");
+            }
             
         },
         error: function(error) {
