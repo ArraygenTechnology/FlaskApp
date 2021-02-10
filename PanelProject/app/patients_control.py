@@ -5,7 +5,7 @@ from .models import patients, panels
 @app.route('/patient/', defaults={'id': 0})
 @app.route('/patient/<id>')
 def patient(id):
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         all_patients = patients.Patients.query.all()
         if id == 0:
             # For Add patirnt view
@@ -40,55 +40,56 @@ def patient(id):
 @app.route('/patients_add_update', defaults={'id':0}, methods = ['GET', 'POST'])
 @app.route('/patients_add_update/<int:id>', methods = ['GET', 'POST'])
 def patients_add_update(id):
-    if request.method == 'POST':
-        data = request.form
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
+        if request.method == 'POST':
+            data = request.form
 
-        all_data = data.to_dict()
-        if "panel" in data.keys():
-            del all_data['panel']
-        del all_data['csrf_token']
-        # update patient information
-        if id != 0:
-            update_patient = patients.Patients.query.get(id)
-            exists = patients.Patients.query.filter_by(email=all_data.get('email')).first()
-            for attr_name, new_value in all_data.items():
-                setattr(update_patient, attr_name, new_value)
+            all_data = data.to_dict()
+            if "panel" in data.keys():
+                del all_data['panel']
+            del all_data['csrf_token']
+            # update patient information
+            if id != 0:
+                update_patient = patients.Patients.query.get(id)
+                exists = patients.Patients.query.filter_by(email=all_data.get('email')).first()
+                for attr_name, new_value in all_data.items():
+                    setattr(update_patient, attr_name, new_value)
 
-            patient_panels = data.getlist('panel')
-
-            update_patient.panels = [panels.Panels.query.get(p_id) for p_id in patient_panels]
-            #print(update_patient.panels)
-            if exists == None:
-                update_patient.email = all_data.get('email')
-            elif exists.id == id:
-                pass
-            else:
-                flash("Email id not updated because it's email already exists".title(), "warning")
-            db.session.commit()
-            flash("Patient Information Updated Successfully".title(), "info")
-        else:
-        # add new patient details
-            # get if any exists , with same email id
-            exists =  patients.Patients.query.filter_by(email=all_data.get('email')).first()
-            if exists == None:
-                # creating object
-                patient = patients.Patients(**all_data)
-                # get panels selected and appending it to parameter so that it can add it to relational table
                 patient_panels = data.getlist('panel')
-                for panel in patient_panels:
-                    patient.panels.append(panels.Panels.query.get(panel))
-                db.session.add(patient)
+
+                update_patient.panels = [panels.Panels.query.get(p_id) for p_id in patient_panels]
+                #print(update_patient.panels)
+                if exists == None:
+                    update_patient.email = all_data.get('email')
+                elif exists.id == id:
+                    pass
+                else:
+                    flash("Email id not updated because it's email already exists".title(), "warning")
                 db.session.commit()
-                flash("Patient Added Successfully".title(), "info")
+                flash("Patient Information Updated Successfully".title(), "info")
             else:
-                flash("Patient Already Exists".title(), "error")
-
-    return redirect('/patient')
-
+            # add new patient details
+                # get if any exists , with same email id
+                exists =  patients.Patients.query.filter_by(email=all_data.get('email')).first()
+                if exists == None:
+                    # creating object
+                    patient = patients.Patients(**all_data)
+                    # get panels selected and appending it to parameter so that it can add it to relational table
+                    patient_panels = data.getlist('panel')
+                    for panel in patient_panels:
+                        patient.panels.append(panels.Panels.query.get(panel))
+                    db.session.add(patient)
+                    db.session.commit()
+                    flash("Patient Added Successfully".title(), "info")
+                else:
+                    flash("Patient Already Exists".title(), "error")
+        return redirect('/patient')
+    else:
+        return redirect("/bad_request")
 
 @app.route('/patients_view')
 def patients_view():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         patients_panels_refid = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels).filter(
             patients.Patient_panels.panel_id == panels.Panels.id,
             patients.Patient_panels.patient_id == patients.Patients.id).order_by(patients.Patients.id).all()
@@ -99,7 +100,7 @@ def patients_view():
 
 @app.route('/patient_delete/<id>')
 def patient_delete(id):
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         uploaded_files = patients.Patient_panels.query.filter(patients.Patient_panels.patient_id == id)
         for file in uploaded_files:
             if file.dna_results != None:
@@ -125,7 +126,7 @@ def patient_delete(id):
 @csrf.exempt
 @app.route('/getPatientById', methods=['POST'])
 def getPatientById():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         patient = patients.Patients.query.get(request.form['id'])
         patient_schema = patients.PatientsSchema()
         op = patient_schema.dumps(patient)
@@ -136,7 +137,7 @@ def getPatientById():
 @csrf.exempt
 @app.route('/sendEmail', methods=['POST'])
 def sendEmail():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         '''
                msg = Message(request.form['subject'], sender='bioinformatics.arraygen.ak@gmail.com', recipients=[request.form['to']])
                msg.html = request.form['message']
@@ -196,7 +197,7 @@ def sendEmail():
 @csrf.exempt
 @app.route('/updatePatientTechnicianStatus', methods=['POST'])
 def updatePatientTechnicianStatus():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         update_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
         setattr(update_patient_panels , "technician_status" , request.form['technician_status'])
         setattr(update_patient_panels , "technician_status_date" , datetime.datetime.now())
@@ -211,7 +212,7 @@ def updatePatientTechnicianStatus():
 @csrf.exempt
 @app.route('/getPatientPhysicianDetails', methods=['POST'])
 def getPatientPhysicianDetails():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         get_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
         patient_panel_schema = patients.Patient_panelsSchema()
         op = patient_panel_schema.dumps(get_patient_panels)

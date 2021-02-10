@@ -6,7 +6,10 @@ from .models import patients, panels, sys_users
 def login(user_type):
     if user_type in ['User', 'Technician', 'Physician', 'Admin']:
         if "login_id" in session:
-            return redirect("/dashboard")
+            if session.get("role") == "User":
+                return redirect("/user_index")
+            else:
+                return redirect("/dashboard")
         else:
             return render_template('login.html' , user_type = user_type)
     else:

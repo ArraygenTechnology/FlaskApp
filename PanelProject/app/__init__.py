@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, make_response, flash, session,jsonify, url_for, send_from_directory
+from flask import Flask,Response, render_template, redirect, request, make_response, flash, session,jsonify, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 import json, os, datetime
 from werkzeug.utils import secure_filename

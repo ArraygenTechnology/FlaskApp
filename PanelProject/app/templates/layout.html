@@ -103,7 +103,7 @@
         </div>
       </div>
 
-   
+
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -118,6 +118,7 @@
               </p>
             </a>
           </li>
+          {% if (session.role == 'Admin') or (session.role == 'Technician')  %}
           <li class="nav-item menu-open">
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-users"></i>
@@ -147,6 +148,8 @@
               </li>
             </ul>
           </li>
+          {% endif %}
+          {% if (session.role == 'Admin') or (session.role == 'Physician')  %}
           <li class="nav-item">
             <a href="/results_view" class="nav-link">
               <i class="fas fa-user-md nav-icon"></i>
@@ -155,6 +158,8 @@
               </p>
             </a>
           </li>
+          {% endif %}
+          {% if session.role == 'Admin'  %}
           <li class="nav-item menu-open">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
@@ -199,6 +204,7 @@
               {% endfor %}
             </ul>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a href="/sys_user_logout" class="nav-link">
               <i class="nav-icon fas fa-sign-out-alt"></i>

@@ -3,7 +3,7 @@ from .models import patients, panels
 
 @app.route('/analysis_view')
 def analysis_view():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         technician_status = "Rejected"
         patients_panels_refid_rejected = db.session.query(patients.Patients, panels.Panels, patients.Patient_panels).filter(patients.Patient_panels.panel_id == panels.Panels.id,
             patients.Patient_panels.patient_id == patients.Patients.id,
@@ -77,7 +77,7 @@ def pdf_genration_genetics(user, user_algo , start_name):
 @csrf.exempt
 @app.route('/submit_analysis_data', methods = ['POST'])
 def submit_analysis_data():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         if request.form.get("analysis_result",None) != None:
             ref_id = request.form['ref_id']
             update_patient_panels = patients.Patient_panels.query.get((int(ref_id), request.form['patient_id'], request.form['panel_id']))# patients.Patient_panels.query.get(int(ref_id))
@@ -184,7 +184,7 @@ def delete_analysis_data_file(id, patient_id, panel_id, name):
 @csrf.exempt
 @app.route('/submitReport', methods=['POST'])
 def submitReport():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         all_data = request.form
         id = all_data.get('id')
         patient_id = all_data.get('patient_id')
@@ -216,11 +216,34 @@ def submitReport():
     else:
         return redirect("/bad_request")
 
+# For download report data format
+# report type is used for to understanding which format we want to download
+@app.route('/report_format_download_<report_type>', methods=['GET'])
+def report_format_download(report_type):
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
+        if report_type == "blood":
+            # Take out data which has blood report data
+            all_data = db.session.query(panels.Traits , panels.BloodAlgorithmInfo).filter(panels.BloodAlgorithmInfo.trait_id == panels.Traits.id).all()
+            # res list is used to store all data one by one in expected format so that we can put it to file
+            res_list = []
+            for trait_data, blood_algo_data in all_data:
+                res_list.append(str(trait_data.id)+"\t\t"+str(trait_data.name))
+            res = "\n".join(res_list)
+            return Response(
+                res,
+                mimetype="text/csv",
+                headers={"Content-disposition":
+                             "attachment; filename="+report_type+".csv"})
+            #return redirect("/analysis_view")
+        else:
+            return redirect("/analysis_view")
+    else:
+        return redirect("/bad_request")
 # For Ajax
 @csrf.exempt
 @app.route('/getReportFields', methods=['POST'])
 def getReportFields():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Technician"):
         get_patient_panels = patients.Patient_panels.query.get((request.form['id'], request.form['patient_id'], request.form['panel_id']))
         patient_panel_schema = patients.Patient_panelsSchema()
         op = patient_panel_schema.dumps(get_patient_panels)
@@ -250,3 +273,4 @@ def getReportFields():
         return json.dumps(d)
     else:
         return redirect("/bad_request")
+

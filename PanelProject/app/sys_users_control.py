@@ -5,7 +5,7 @@ from .models import sys_users, patients, panels
 @csrf.exempt
 @app.route("/sys_user_login", methods = ['POST'])
 def sys_user_login():
-    if request.method == 'POST':
+    if request.method == 'POST' :
         email = request.form.get('email')
         password = request.form.get('password')
         user = sys_users.Users.query.filter(sys_users.Users.email == email).first()
@@ -96,7 +96,7 @@ def sys_users_add_update(id):
 @app.route('/sys_user/', defaults={'id': 0})
 @app.route('/sys_user/<id>')
 def sys_user(id):
-    if "login_id" in session:
+    if "login_id" in session and session.get("role") == "Admin" :
         if id == 0:
             return render_template('sys_users.html')
         else:
@@ -110,7 +110,7 @@ def sys_user(id):
 
 @app.route('/sys_users_view')
 def sys_users_view():
-    if "login_id" in session:
+    if "login_id" in session and session.get("role") == "Admin":
         users = sys_users.Users.query.all()
         return render_template('sys_users_view.html', Users= users)
     else:
@@ -118,7 +118,7 @@ def sys_users_view():
 
 @app.route('/sys_users_delete/<id>')
 def sys_users_delete(id):
-    if "login_id" in session:
+    if "login_id" in session and session.get("role") == "Admin":
         delete_user = sys_users.Users.query.get(id)
         db.session.delete(delete_user)
         db.session.commit()

@@ -3,7 +3,7 @@ from .models import patients, panels, sys_users
 from .analysis_control import pdf_genration_genetics
 @app.route('/results_view', methods = ['GET', 'POST'])
 def results_view():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Physician"):
         from_to_date_input = ""
         technician_status = "Approved"
         if request.args.get("from_to_date_input") != None:
@@ -29,7 +29,7 @@ def results_view():
 @csrf.exempt
 @app.route('/updatePatientPhisicianDetails', methods=['POST'])
 def updatePatientPhisicianDetails():
-    if "login_id" in session:
+    if "login_id" in session and (session.get("role") == "Admin" or session.get("role") == "Physician"):
         #print(request.form.get('id'), request.form.get('patient_id'), request.form.get('panel_id'))
         update_patient_panels = patients.Patient_panels.query.get((request.form.get('id'), request.form.get('patient_id'), request.form.get('panel_id')))
         #print(update_patient_panels)
